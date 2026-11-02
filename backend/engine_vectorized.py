@@ -23,6 +23,7 @@ from .models import (
     QuestionModel,
     MovieModel,
 )
+from .constraints import ConstraintManager
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 DEFAULT_NPZ = DATA_DIR / "attributes_matrix.npz"
@@ -202,7 +203,7 @@ class VectorizedMovienatorEngine:
         return float(entropy)
 
     def select_next_question(self, session: VectorizedGameSession) -> Optional[Question]:
-        """Selects the question maximizing Shannon Expected Information Gain in < 2ms."""
+        """Selects the question maximizing Shannon Expected Information Gain with constraint masking."""
         if np.all(session.asked_mask):
             return None
 
@@ -220,17 +221,22 @@ class VectorizedMovienatorEngine:
         # 4. Mutual Information Gain IG(C; Q) = H(Q) - H(Q | C)
         info_gain = h_q - h_q_given_c
 
-        # 5. Weighted Information Gain score
+        # 5. Weighted Information Gain score with degenerate penalty
         scores = info_gain * self.weights
+
+        # Penalize questions that cannot meaningfully split remaining candidate mass
+        degenerate_mask = (p_yes < 0.01) | (p_yes > 0.99)
+        scores[degenerate_mask] -= 0.8
+
         scores[session.asked_mask] = -1e9
 
         best_q_idx = int(np.argmax(scores))
-        if scores[best_q_idx] <= 0:
+        if scores[best_q_idx] <= -100:
             # Fallback: select remaining question with highest binary entropy
             fallback_scores = h_q * self.weights
             fallback_scores[session.asked_mask] = -1e9
             best_q_idx = int(np.argmax(fallback_scores))
-            if fallback_scores[best_q_idx] <= 0:
+            if fallback_scores[best_q_idx] <= -100:
                 return None
 
         q_id = str(self.question_ids[best_q_idx])
@@ -242,7 +248,7 @@ class VectorizedMovienatorEngine:
         question: Question,
         answer: UserAnswer,
     ) -> Tuple[np.ndarray, bool]:
-        """Performs vectorized Bayesian update using LogSumExp in < 0.2ms."""
+        """Performs vectorized Bayesian update with constraint propagation and hard pruning."""
         q_idx = self.question_id_to_idx.get(question.id)
         if q_idx is None:
             raise ValueError(f"Unknown question id: {question.id}")
@@ -251,17 +257,36 @@ class VectorizedMovienatorEngine:
 
         if answer != UserAnswer.DONT_KNOW:
             user_val = answer.value_score
+
+            # 1. Apply semantic constraint graph and eliminate impossible candidates
+            ConstraintManager.apply_answer_constraints(
+                q_id=question.id,
+                answer_score=user_val,
+                q_map=self.question_id_to_idx,
+                asked_mask=session.asked_mask,
+                log_probs=session.log_probs,
+                matrix=self.matrix,
+            )
+
+            # 2. Bayesian likelihood update for remaining viable candidates
             col = self.matrix[:, q_idx]
             diff = np.abs(col - user_val)
             likelihood = (1.0 - diff) * (1.0 - 2.0 * self.epsilon) + self.epsilon
             likelihood = np.clip(likelihood, self.epsilon, 1.0 - self.epsilon)
 
-            # Log-space Bayesian update: log P(C | A) = log P(C) + log L(A | C) - LogSumExp(...)
             session.log_probs += np.log(likelihood)
-            max_lp = float(np.max(session.log_probs))
-            lse = max_lp + float(np.log(np.sum(np.exp(session.log_probs - max_lp))))
-            session.log_probs -= lse
-            session.probs = np.exp(session.log_probs)
+
+            # 3. LogSumExp normalization across viable candidates
+            finite_mask = session.log_probs > -1e5
+            if np.any(finite_mask):
+                max_lp = float(np.max(session.log_probs[finite_mask]))
+                lse = max_lp + float(np.log(np.sum(np.exp(session.log_probs[finite_mask] - max_lp))))
+                session.log_probs[finite_mask] -= lse
+                session.probs[finite_mask] = np.exp(session.log_probs[finite_mask])
+                session.probs[~finite_mask] = 0.0
+            else:
+                session.probs.fill(1.0 / len(session.probs))
+                session.log_probs = np.log(session.probs)
 
         session.step_count += 1
         session.log_prob_snapshots.append(session.log_probs.copy())
@@ -314,19 +339,28 @@ class VectorizedMovienatorEngine:
         return None
 
     def check_ready_to_guess(self, session: VectorizedGameSession) -> bool:
-        """Determines if the candidate distribution has reached deduction threshold."""
+        """Determines if the candidate distribution has reached deduction threshold (Akinator heuristic)."""
         _, top_prob = self.get_top_candidate(session)
         _, runner_up_prob = self.get_runner_up_candidate(session)
+        ratio = top_prob / max(1e-12, runner_up_prob)
 
-        # 1. High absolute confidence threshold
-        if top_prob >= session.confidence_threshold:
+        # 1. Early decisive lead: >= 30% confidence with 3.0x lead after turn 5
+        if session.step_count >= 5 and top_prob >= 0.30 and ratio >= 3.0:
             return True
 
-        # 2. Strong dominance ratio over runner-up
-        if runner_up_prob > 0 and (top_prob / runner_up_prob) >= session.runner_up_ratio and top_prob >= 0.55:
+        # 2. Strong dominance: >= 25% confidence with 3.5x lead after turn 7
+        if session.step_count >= 7 and top_prob >= 0.25 and ratio >= 3.5:
             return True
 
-        # 3. Maximum question limit reached
+        # 3. High absolute confidence threshold
+        if top_prob >= 0.60:
+            return True
+
+        # 4. Turn 12 heuristic: 2.0x lead with >= 20% confidence
+        if session.step_count >= 12 and top_prob >= 0.20 and ratio >= 2.0:
+            return True
+
+        # 5. Maximum question limit reached
         if session.step_count >= session.max_questions:
             return True
 

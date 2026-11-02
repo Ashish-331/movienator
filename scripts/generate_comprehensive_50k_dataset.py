@@ -60,16 +60,13 @@ QUESTIONS = [
     {"id": "is_south_indian", "text": "Is this originally a South Indian cinema film (Tamil, Telugu, Malayalam, or Kannada)?", "category": "industry", "weight": 1.30},
     {"id": "is_bengali", "text": "Is this originally a Bengali-language cinema movie?", "category": "industry", "weight": 1.15},
     {"id": "is_marathi", "text": "Is this originally a Marathi-language cinema movie?", "category": "industry", "weight": 1.15},
-    {"id": "is_marathi_or_bengali", "text": "Is this originally a Marathi or Bengali cinema classic?", "category": "industry", "weight": 1.10},
     {"id": "is_punjabi", "text": "Is this originally a Punjabi-language cinema movie?", "category": "industry", "weight": 1.15},
     {"id": "is_regional_or_other", "text": "Is this in Urdu, Gujarati, Bhojpuri, Odia, Assamese, Nepali, or another regional Indian language?", "category": "industry", "weight": 1.10},
     {"id": "is_pan_india", "text": "Was this marketed and theatrically released as a massive multilingual Pan-India blockbuster?", "category": "scale", "weight": 1.20},
 
     # 2. Era / Decade Bisections
     {"id": "released_pre_1970", "text": "Was this movie released before 1970 (Vintage / Early Golden Age era)?", "category": "era", "weight": 1.15},
-    {"id": "released_pre_1980", "text": "Was this movie released before 1980 (Golden Age / Angry Young Man era)?", "category": "era", "weight": 1.15},
     {"id": "released_1970_1989", "text": "Was this movie released during the 1970s or 1980s (Masala & Angry Young Man era)?", "category": "era", "weight": 1.15},
-    {"id": "released_80s_or_90s", "text": "Was this movie released in the 1980s or 1990s?", "category": "era", "weight": 1.15},
     {"id": "released_1990_1999", "text": "Was this movie released during the 1990s (90s Romance & Action era)?", "category": "era", "weight": 1.15},
     {"id": "released_post_2000", "text": "Was this movie released in the 21st century (year 2000 or later)?", "category": "era", "weight": 1.30},
     {"id": "released_2000s", "text": "Was this movie released between 2000 and 2009 (Millennium era)?", "category": "era", "weight": 1.15},
@@ -189,7 +186,6 @@ def evaluate_movie_attributes(
     attrs["is_south_indian"] = 1.0 if language in ("tamil", "telugu", "malayalam", "kannada", "tulu") else 0.0
     attrs["is_bengali"] = 1.0 if language == "bengali" else 0.0
     attrs["is_marathi"] = 1.0 if language == "marathi" else 0.0
-    attrs["is_marathi_or_bengali"] = 1.0 if language in ("marathi", "bengali") else 0.0
     attrs["is_punjabi"] = 1.0 if language == "punjabi" else 0.0
     attrs["is_regional_or_other"] = 1.0 if language in (
         "urdu", "gujarati", "bhojpuri", "nepali", "oriya", "assamese", "rajastani", "sanskrit", "kashmiri", "konkani"
@@ -199,12 +195,10 @@ def evaluate_movie_attributes(
         or any(w in title_lower for w in ["baahubali", "kgf", "rrr", "pushpa", "kantara", "jawan", "kalki"])
     ) else 0.0
 
-    # 2. Era / Decade
+    # 2. Era / Decade (Strict, non-overlapping decade buckets)
     if year is not None:
         attrs["released_pre_1970"] = 1.0 if year < 1970 else 0.0
-        attrs["released_pre_1980"] = 1.0 if year < 1980 else 0.0
         attrs["released_1970_1989"] = 1.0 if 1970 <= year <= 1989 else 0.0
-        attrs["released_80s_or_90s"] = 1.0 if 1980 <= year <= 1999 else 0.0
         attrs["released_1990_1999"] = 1.0 if 1990 <= year <= 1999 else 0.0
         attrs["released_post_2000"] = 1.0 if year >= 2000 else 0.0
         attrs["released_2000s"] = 1.0 if 2000 <= year <= 2009 else 0.0
@@ -212,7 +206,7 @@ def evaluate_movie_attributes(
         attrs["released_post_2020"] = 1.0 if year >= 2020 else 0.0
     else:
         for k in [
-            "released_pre_1970", "released_pre_1980", "released_1970_1989", "released_80s_or_90s",
+            "released_pre_1970", "released_1970_1989",
             "released_1990_1999", "released_post_2000", "released_2000s", "released_2010s", "released_post_2020"
         ]:
             attrs[k] = 0.5
@@ -423,12 +417,23 @@ def main():
             iconic_attrs = iconic_match.get("attributes") if iconic_match else None
 
             # Compute Popularity prior
-            log_votes = math.log1p(votes)
-            rating_mult = (rating / 10.0) if rating is not None else 0.5
-            # Smooth scale between 0.3 and 3.5
-            popularity = 0.3 + 2.2 * (log_votes / 14.0) * rating_mult
+            # Foreign Hollywood title detection
+            title_lower = title.lower()
+            foreign_kw = [
+                'iron man', 'indiana jones', 'star wars', 'zero dark thirty',
+                'the jungle book', 'escape plan', 'get smart', 'a good day to die hard',
+                'the darjeeling limited', 'the mummy', 'syriana', 'eastern promises',
+                'uncharted', 'the big sick', 'fast & furious', 'jurassic', 'transformers'
+            ]
+            is_foreign = any(k in title_lower for k in foreign_kw)
+
+            # Compute Popularity power-law prior
+            rating_val = rating if rating is not None else 6.0
+            raw_pop = ((votes + 10.0) ** 0.65) * ((rating_val / 10.0) ** 1.5)
+            if is_foreign:
+                raw_pop *= 0.001
             if iconic_match:
-                popularity = max(popularity, float(iconic_match.get("popularity", 1.5)) * 1.5)
+                raw_pop *= 3.0
 
             raw_movies.append({
                 "id": m_id,
@@ -442,7 +447,7 @@ def main():
                 "genres": genres,
                 "director": director,
                 "lead_cast": lead_cast,
-                "popularity": round(popularity, 4),
+                "popularity": float(raw_pop),
                 "poster_url": poster_url,
                 "imdb_id": raw_id if raw_id != "-" else None,
                 "iconic_attrs": iconic_attrs,
@@ -465,6 +470,7 @@ def main():
                 if v == im["industry"]:
                     lang = k
                     break
+            raw_pop = ((50000.0 + 10.0) ** 0.65) * ((8.2 / 10.0) ** 1.5) * 3.0
             raw_movies.append({
                 "id": m_id,
                 "title": im["title"],
@@ -477,7 +483,7 @@ def main():
                 "genres": ["Drama", "Action"],
                 "director": im["director"],
                 "lead_cast": im["lead_cast"],
-                "popularity": float(im.get("popularity", 2.0)) * 1.5,
+                "popularity": float(raw_pop),
                 "poster_url": im.get("poster_url"),
                 "imdb_id": None,
                 "iconic_attrs": im.get("attributes"),
@@ -531,7 +537,7 @@ def main():
             json.dumps(m["genres"]),
             m["director"],
             json.dumps(m["lead_cast"]),
-            m["popularity"],
+            round(math.log10(max(1.0, m["popularity"])), 4),
             m["poster_url"],
             m["imdb_id"],
         ))

@@ -1,6 +1,6 @@
 {
   "total_movies": 50625,
-  "total_questions": 90,
+  "total_questions": 87,
   "sample_movies": [
     {
       "id": "tt0398974",
@@ -9,7 +9,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt1702558",
@@ -18,7 +18,7 @@
       "industry": "Urdu Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0493437",
@@ -27,7 +27,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 5.3,
       "votes": 1892,
-      "popularity": 0.9285
+      "popularity": 52.22766834378525
     },
     {
       "id": "tt0273405",
@@ -36,7 +36,7 @@
       "industry": "Urdu Cinema",
       "rating": 2.2,
       "votes": 20,
-      "popularity": 0.4053
+      "popularity": 0.9413753819124876
     },
     {
       "id": "tt0049595",
@@ -45,7 +45,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 7.4,
       "votes": 21,
-      "popularity": 0.6594
+      "popularity": 5.932430794300961
     },
     {
       "id": "tt2930026",
@@ -54,7 +54,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt6597160",
@@ -63,7 +63,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 7.9,
       "votes": 16,
-      "popularity": 0.6517
+      "popularity": 5.836779851252561
     },
     {
       "id": "tt0829459",
@@ -72,7 +72,7 @@
       "industry": "Urdu Cinema",
       "rating": 6.6,
       "votes": 26885,
-      "popularity": 1.3578
+      "popularity": 406.07140666302143
     },
     {
       "id": "tt0154875",
@@ -81,7 +81,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0364628",
@@ -90,7 +90,7 @@
       "industry": "Bengali Cinema",
       "rating": 6.3,
       "votes": 12,
-      "popularity": 0.5539
+      "popularity": 3.7289414704161086
     },
     {
       "id": "tt0364733",
@@ -99,7 +99,7 @@
       "industry": "Tollywood (Telugu)",
       "rating": 5.6,
       "votes": 218,
-      "popularity": 0.7742
+      "popularity": 14.286955468318364
     },
     {
       "id": "tt8272296",
@@ -108,7 +108,7 @@
       "industry": "Nepali Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt5684550",
@@ -117,7 +117,7 @@
       "industry": "Sanskrit Cinema",
       "rating": 6.2,
       "votes": 379,
-      "popularity": 0.8787
+      "popularity": 23.55346331687444
     },
     {
       "id": "tt0250733",
@@ -126,7 +126,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt1407272",
@@ -135,7 +135,7 @@
       "industry": "Urdu Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0318983",
@@ -144,7 +144,7 @@
       "industry": "Kollywood (Tamil)",
       "rating": 6.9,
       "votes": 63,
-      "popularity": 0.7509
+      "popularity": 9.320377336810797
     },
     {
       "id": "tt3148392",
@@ -153,7 +153,7 @@
       "industry": "Sandalwood (Kannada)",
       "rating": 4.5,
       "votes": 11,
-      "popularity": 0.4757
+      "popularity": 2.184043641803056
     },
     {
       "id": "tt7836398",
@@ -162,7 +162,7 @@
       "industry": "Nepali Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0376353",
@@ -171,7 +171,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt2302945",
@@ -180,7 +180,7 @@
       "industry": "Marathi Cinema",
       "rating": 7.3,
       "votes": 231,
-      "popularity": 0.9248
+      "popularity": 22.044252041258847
     },
     {
       "id": "tt6517874",
@@ -189,7 +189,7 @@
       "industry": "Mollywood (Malayalam)",
       "rating": 6.0,
       "votes": 459,
-      "popularity": 0.8781
+      "popularity": 25.321488013151125
     },
     {
       "id": "tt0150519",
@@ -198,7 +198,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt4820566",
@@ -207,7 +207,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0318296",
@@ -216,7 +216,7 @@
       "industry": "Kollywood (Tamil)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt12717866",
@@ -225,7 +225,7 @@
       "industry": "Urdu Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt12701012",
@@ -234,7 +234,7 @@
       "industry": "Tollywood (Telugu)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt3466016",
@@ -243,7 +243,7 @@
       "industry": "Tollywood (Telugu)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt4654666",
@@ -252,7 +252,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt1319563",
@@ -261,7 +261,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 4.1,
       "votes": 16,
-      "popularity": 0.4825
+      "popularity": 2.1822698938198517
     },
     {
       "id": "tt0398130",
@@ -270,7 +270,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0065764",
@@ -279,7 +279,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 7.1,
       "votes": 98,
-      "popularity": 0.8127
+      "popularity": 12.549111097822916
     },
     {
       "id": "tt2707908",
@@ -288,7 +288,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt3509698",
@@ -297,7 +297,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt1575647",
@@ -306,7 +306,7 @@
       "industry": "Tollywood (Telugu)",
       "rating": 6.6,
       "votes": 160,
-      "popularity": 0.827
+      "popularity": 15.104546906665389
     },
     {
       "id": "jam_unknown_34",
@@ -315,7 +315,7 @@
       "industry": "Bengali Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0357879",
@@ -324,7 +324,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 5.4,
       "votes": 11,
-      "popularity": 0.5109
+      "popularity": 2.8709999260590404
     },
     {
       "id": "tt1827428",
@@ -333,7 +333,7 @@
       "industry": "Bhojpuri Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0351354",
@@ -342,7 +342,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 4.4,
       "votes": 7,
-      "popularity": 0.4438
+      "popularity": 1.8406482981786214
     },
     {
       "id": "tt0213519",
@@ -351,7 +351,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 6.0,
       "votes": 6,
-      "popularity": 0.4835
+      "popularity": 2.81776560943942
     },
     {
       "id": "tt0246905",
@@ -360,7 +360,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": 6.0,
       "votes": 1312,
-      "popularity": 0.977
+      "popularity": 49.662356300664484
     },
     {
       "id": "tt1582519",
@@ -369,7 +369,7 @@
       "industry": "Tollywood (Telugu)",
       "rating": 7.6,
       "votes": 8284,
-      "popularity": 1.3775
+      "popularity": 233.5699719534035
     },
     {
       "id": "tt6682124",
@@ -378,7 +378,7 @@
       "industry": "Sandalwood (Kannada)",
       "rating": 5.1,
       "votes": 118,
-      "popularity": 0.683
+      "popularity": 8.531821180052813
     },
     {
       "id": "shaan_unknown_42",
@@ -387,7 +387,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt6882630",
@@ -396,7 +396,7 @@
       "industry": "Tollywood (Telugu)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0397478",
@@ -405,7 +405,7 @@
       "industry": "Urdu Cinema",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0464849",
@@ -414,7 +414,7 @@
       "industry": "Tollywood (Telugu)",
       "rating": 6.9,
       "votes": 110,
-      "popularity": 0.8106
+      "popularity": 12.874828302363003
     },
     {
       "id": "tt13276010",
@@ -423,7 +423,7 @@
       "industry": "Sandalwood (Kannada)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt0139306",
@@ -432,7 +432,7 @@
       "industry": "Bollywood (Hindi)",
       "rating": null,
       "votes": 0,
-      "popularity": 0.3
+      "popularity": 2.0759977361097435
     },
     {
       "id": "tt10515954",
@@ -441,7 +441,7 @@
       "industry": "Mollywood (Malayalam)",
       "rating": 8.1,
       "votes": 40,
-      "popularity": 0.7727
+      "popularity": 9.26953676165208
     },
     {
       "id": "tt5159256",
@@ -450,7 +450,7 @@
       "industry": "Urdu Cinema",
       "rating": 8.2,
       "votes": 25,
-      "popularity": 0.7198
+      "popularity": 7.487985718204164
     }
   ]
 }

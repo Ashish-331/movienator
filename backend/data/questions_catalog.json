@@ -48,12 +48,6 @@
     "weight": 1.15
   },
   {
-    "id": "is_marathi_or_bengali",
-    "text": "Is this originally a Marathi or Bengali cinema classic?",
-    "category": "industry",
-    "weight": 1.1
-  },
-  {
     "id": "is_punjabi",
     "text": "Is this originally a Punjabi-language cinema movie?",
     "category": "industry",
@@ -78,20 +72,8 @@
     "weight": 1.15
   },
   {
-    "id": "released_pre_1980",
-    "text": "Was this movie released before 1980 (Golden Age / Angry Young Man era)?",
-    "category": "era",
-    "weight": 1.15
-  },
-  {
     "id": "released_1970_1989",
     "text": "Was this movie released during the 1970s or 1980s (Masala & Angry Young Man era)?",
-    "category": "era",
-    "weight": 1.15
-  },
-  {
-    "id": "released_80s_or_90s",
-    "text": "Was this movie released in the 1980s or 1990s?",
     "category": "era",
     "weight": 1.15
   },
