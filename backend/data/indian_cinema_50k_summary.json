@@ -1,0 +1,456 @@
+{
+  "total_movies": 50625,
+  "total_questions": 90,
+  "sample_movies": [
+    {
+      "id": "tt0398974",
+      "title": "Dr. Shaitan",
+      "year": 1960,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt1702558",
+      "title": "Nadir Khan",
+      "year": 1968,
+      "industry": "Urdu Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0493437",
+      "title": "Apna Sapna Money Money",
+      "year": 2006,
+      "industry": "Bollywood (Hindi)",
+      "rating": 5.3,
+      "votes": 1892,
+      "popularity": 0.9285
+    },
+    {
+      "id": "tt0273405",
+      "title": "Aag Aur Sholay",
+      "year": 1987,
+      "industry": "Urdu Cinema",
+      "rating": 2.2,
+      "votes": 20,
+      "popularity": 0.4053
+    },
+    {
+      "id": "tt0049595",
+      "title": "Parivar",
+      "year": 1956,
+      "industry": "Bollywood (Hindi)",
+      "rating": 7.4,
+      "votes": 21,
+      "popularity": 0.6594
+    },
+    {
+      "id": "tt2930026",
+      "title": "Humraah: The Traitor",
+      "year": 2008,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt6597160",
+      "title": "Jacqueline I Am Coming",
+      "year": 2019,
+      "industry": "Bollywood (Hindi)",
+      "rating": 7.9,
+      "votes": 16,
+      "popularity": 0.6517
+    },
+    {
+      "id": "tt0829459",
+      "title": "A Mighty Heart",
+      "year": 2007,
+      "industry": "Urdu Cinema",
+      "rating": 6.6,
+      "votes": 26885,
+      "popularity": 1.3578
+    },
+    {
+      "id": "tt0154875",
+      "title": "Midnight Mail",
+      "year": 1939,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0364628",
+      "title": "Raktalekha",
+      "year": 1992,
+      "industry": "Bengali Cinema",
+      "rating": 6.3,
+      "votes": 12,
+      "popularity": 0.5539
+    },
+    {
+      "id": "tt0364733",
+      "title": "Veedevadandi Babu",
+      "year": 1997,
+      "industry": "Tollywood (Telugu)",
+      "rating": 5.6,
+      "votes": 218,
+      "popularity": 0.7742
+    },
+    {
+      "id": "tt8272296",
+      "title": "A Mayalu Timi Lai",
+      "year": 2018,
+      "industry": "Nepali Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt5684550",
+      "title": "Da Tang Xuan Zang",
+      "year": 2016,
+      "industry": "Sanskrit Cinema",
+      "rating": 6.2,
+      "votes": 379,
+      "popularity": 0.8787
+    },
+    {
+      "id": "tt0250733",
+      "title": "Sikandar",
+      "year": 1976,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt1407272",
+      "title": "Pehla Qadam",
+      "year": 1958,
+      "industry": "Urdu Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0318983",
+      "title": "Amman Koil Kizhakkaalae",
+      "year": 1986,
+      "industry": "Kollywood (Tamil)",
+      "rating": 6.9,
+      "votes": 63,
+      "popularity": 0.7509
+    },
+    {
+      "id": "tt3148392",
+      "title": "Shatru",
+      "year": 2013,
+      "industry": "Sandalwood (Kannada)",
+      "rating": 4.5,
+      "votes": 11,
+      "popularity": 0.4757
+    },
+    {
+      "id": "tt7836398",
+      "title": "Kamal Khatri Feat. Simpal Kharel: Jaula Relaima",
+      "year": 2017,
+      "industry": "Nepali Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0376353",
+      "title": "Zinda Jala Doonga",
+      "year": 1988,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt2302945",
+      "title": "Tukaram",
+      "year": 2012,
+      "industry": "Marathi Cinema",
+      "rating": 7.3,
+      "votes": 231,
+      "popularity": 0.9248
+    },
+    {
+      "id": "tt6517874",
+      "title": "Ramante Edenthottam",
+      "year": 2017,
+      "industry": "Mollywood (Malayalam)",
+      "rating": 6.0,
+      "votes": 459,
+      "popularity": 0.8781
+    },
+    {
+      "id": "tt0150519",
+      "title": "Faslah",
+      "year": 1974,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt4820566",
+      "title": "Jawani Ki Ghabrahat",
+      "year": 1991,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0318296",
+      "title": "Anbu Chinnam",
+      "year": 1990,
+      "industry": "Kollywood (Tamil)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt12717866",
+      "title": "Naveed",
+      "year": 2020,
+      "industry": "Urdu Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt12701012",
+      "title": "Ramudu Bheemudu",
+      "year": 1988,
+      "industry": "Tollywood (Telugu)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt3466016",
+      "title": "Vaade Kavali",
+      "year": 2009,
+      "industry": "Tollywood (Telugu)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt4654666",
+      "title": "Aakhri Muqabla",
+      "year": 1978,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt1319563",
+      "title": "Dracula",
+      "year": 1999,
+      "industry": "Bollywood (Hindi)",
+      "rating": 4.1,
+      "votes": 16,
+      "popularity": 0.4825
+    },
+    {
+      "id": "tt0398130",
+      "title": "Jahanara",
+      "year": 1935,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0065764",
+      "title": "Geet",
+      "year": 1970,
+      "industry": "Bollywood (Hindi)",
+      "rating": 7.1,
+      "votes": 98,
+      "popularity": 0.8127
+    },
+    {
+      "id": "tt2707908",
+      "title": "Sej Piya Ki",
+      "year": 1985,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt3509698",
+      "title": "Sati Sita Luv Kush",
+      "year": 1981,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt1575647",
+      "title": "Nuvvu Vasthavani",
+      "year": 2000,
+      "industry": "Tollywood (Telugu)",
+      "rating": 6.6,
+      "votes": 160,
+      "popularity": 0.827
+    },
+    {
+      "id": "jam_unknown_34",
+      "title": "Jam",
+      "year": null,
+      "industry": "Bengali Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0357879",
+      "title": "Madadgaar",
+      "year": 1987,
+      "industry": "Bollywood (Hindi)",
+      "rating": 5.4,
+      "votes": 11,
+      "popularity": 0.5109
+    },
+    {
+      "id": "tt1827428",
+      "title": "Hamra Se Biyah Karba",
+      "year": 2003,
+      "industry": "Bhojpuri Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0351354",
+      "title": "Milan Ki Raat",
+      "year": 1967,
+      "industry": "Bollywood (Hindi)",
+      "rating": 4.4,
+      "votes": 7,
+      "popularity": 0.4438
+    },
+    {
+      "id": "tt0213519",
+      "title": "Bhool Bhulaiyan",
+      "year": 1933,
+      "industry": "Bollywood (Hindi)",
+      "rating": 6.0,
+      "votes": 6,
+      "popularity": 0.4835
+    },
+    {
+      "id": "tt0246905",
+      "title": "Saajan Chale Sasural",
+      "year": 1996,
+      "industry": "Bollywood (Hindi)",
+      "rating": 6.0,
+      "votes": 1312,
+      "popularity": 0.977
+    },
+    {
+      "id": "tt1582519",
+      "title": "Khaleja",
+      "year": 2010,
+      "industry": "Tollywood (Telugu)",
+      "rating": 7.6,
+      "votes": 8284,
+      "popularity": 1.3775
+    },
+    {
+      "id": "tt6682124",
+      "title": "Rogue",
+      "year": 2017,
+      "industry": "Sandalwood (Kannada)",
+      "rating": 5.1,
+      "votes": 118,
+      "popularity": 0.683
+    },
+    {
+      "id": "shaan_unknown_42",
+      "title": "Shaan",
+      "year": null,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt6882630",
+      "title": "Bhale Bullodu",
+      "year": 1995,
+      "industry": "Tollywood (Telugu)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0397478",
+      "title": "Jaal",
+      "year": 1973,
+      "industry": "Urdu Cinema",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0464849",
+      "title": "Yuvakudu",
+      "year": 2000,
+      "industry": "Tollywood (Telugu)",
+      "rating": 6.9,
+      "votes": 110,
+      "popularity": 0.8106
+    },
+    {
+      "id": "tt13276010",
+      "title": "Goolihatti",
+      "year": 2015,
+      "industry": "Sandalwood (Kannada)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt0139306",
+      "title": "Hamara Ghar",
+      "year": 1950,
+      "industry": "Bollywood (Hindi)",
+      "rating": null,
+      "votes": 0,
+      "popularity": 0.3
+    },
+    {
+      "id": "tt10515954",
+      "title": "Olessia",
+      "year": 2019,
+      "industry": "Mollywood (Malayalam)",
+      "rating": 8.1,
+      "votes": 40,
+      "popularity": 0.7727
+    },
+    {
+      "id": "tt5159256",
+      "title": "Prohibited",
+      "year": 2015,
+      "industry": "Urdu Cinema",
+      "rating": 8.2,
+      "votes": 25,
+      "popularity": 0.7198
+    }
+  ]
+}

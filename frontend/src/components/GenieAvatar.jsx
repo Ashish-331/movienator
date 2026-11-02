@@ -1,153 +1,409 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Sparkles, MessageSquareQuote } from 'lucide-react';
 
-export default function GenieAvatar({ mood = 'neutral', confidence = 0.1 }) {
-  // Determine state based on mood or confidence
+export default function GenieAvatar({
+  mood = 'neutral',
+  confidence = 0.1,
+  questionNumber = 1,
+  currentCategory = null,
+  customDialogue = null,
+}) {
+  // Determine avatar facial mood state
   let state = mood;
   if (mood === 'dynamic') {
-    if (confidence >= 0.75) state = 'confident';
-    else if (confidence >= 0.40) state = 'curious';
+    if (confidence >= 0.72) state = 'confident';
+    else if (confidence >= 0.38) state = 'curious';
     else state = 'thinking';
   }
 
+  // Generate witty, context-aware cinema dialogue lines
+  const dialogue = useMemo(() => {
+    if (customDialogue) return customDialogue;
+
+    if (state === 'celebration') {
+      const victoryLines = [
+        "Aha! The archives never lie! What an iconic piece of Indian cinema!",
+        "Brilliant taste! The CineGenie’s mind-reading powers strike again!",
+        "Masala, magic, and pure cinema! Another deduction added to the legend!",
+      ];
+      return victoryLines[Math.floor(Math.random() * victoryLines.length)];
+    }
+
+    if (state === 'stumped') {
+      const defeatLines = [
+        "By the power of cinema... You have actually stumped me! Reveal your secret film!",
+        "Incredible! A film so elusive even the CineGenie missed its trail! Teach me!",
+        "My crystal lamp is baffled! You are a true Indian cinema connoisseur!",
+      ];
+      return defeatLines[Math.floor(Math.random() * defeatLines.length)];
+    }
+
+    if (state === 'confident') {
+      const confidentLines = [
+        "I already see the posters... I am closing in on your secret film!",
+        "Don't blink! The CineGenie has almost unraveled your mystery!",
+        "The background score is swelling... Your film cannot escape my sight!",
+        "Aha! The probabilities are collapsing into one magnificent movie!",
+      ];
+      return confidentLines[questionNumber % confidentLines.length];
+    }
+
+    if (state === 'curious') {
+      if (currentCategory === 'cast') {
+        return "I see legendary faces shimmering on the silver screen... Let us check the cast!";
+      }
+      if (currentCategory === 'plot') {
+        return "High-octane drama or emotional tearjerker? Let us dive into the story!";
+      }
+      if (currentCategory === 'industry') {
+        return "Bollywood, Tollywood, Kollywood, Mollywood... Which soil birthed this tale?";
+      }
+      const curiousLines = [
+        "Hmm, the mist is parting! I sense something legendary in your thoughts...",
+        "Interesting... That clue narrows down thousands of contenders!",
+        "Let me consult the archives of 50,000+ Indian motion pictures...",
+      ];
+      return curiousLines[questionNumber % curiousLines.length];
+    }
+
+    // Default 'thinking' early questions
+    if (questionNumber <= 2) {
+      return "Focus your mind on the film... Picture the hero, the music, the theatre!";
+    }
+    if (questionNumber <= 4) {
+      return "Is this a golden era classic or a 21st-century box-office monster?";
+    }
+    return "The reels are spinning in my crystal lamp... Answer truthfully!";
+  }, [state, confidence, questionNumber, currentCategory, customDialogue]);
+
   return (
-    <div className="relative flex flex-col items-center justify-center my-2">
-      {/* Glow Aura */}
-      <div 
-        className={`absolute w-36 h-36 rounded-full transition-all duration-700 blur-2xl ${
-          state === 'celebration' 
-            ? 'bg-amber-400/40 scale-125' 
-            : state === 'confident' 
-            ? 'bg-amber-500/30 scale-110' 
+    <div className="relative flex flex-col items-center justify-center my-3 w-full max-w-lg mx-auto">
+      {/* Dynamic Ambient Aura behind character */}
+      <div
+        className={`absolute top-10 w-44 h-44 rounded-full transition-all duration-1000 blur-3xl pointer-events-none ${
+          state === 'celebration'
+            ? 'bg-emerald-400/40 scale-125'
+            : state === 'confident'
+            ? 'bg-rose-500/40 scale-125'
+            : state === 'curious'
+            ? 'bg-amber-400/35 scale-110'
             : state === 'stumped'
-            ? 'bg-purple-500/30'
-            : 'bg-blue-500/20 scale-95'
+            ? 'bg-purple-600/40 scale-125'
+            : 'bg-blue-500/25 scale-100'
         }`}
       />
 
-      {/* SVG Avatar Container */}
-      <div className="relative z-10 w-32 h-32 md:w-36 md:h-36 animate-float transition-transform duration-500">
-        <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+      {/* Comic Speech Bubble with CineGenie's witty dialogue */}
+      <div className="relative z-20 mb-3 px-4 py-2.5 max-w-md w-full mx-auto">
+        <div className="glass-panel-glow rounded-2xl px-4 py-2.5 shadow-xl border border-amber-500/30 text-center relative transform transition-all duration-300 hover:scale-[1.01]">
+          {/* Glowing Speech pointer tail pointing down to CineGenie */}
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#101526] border-r border-b border-amber-500/40 transform rotate-45" />
+
+          <div className="flex items-center justify-center gap-2 text-amber-400 text-xs font-bold tracking-wider uppercase mb-1 font-jakarta">
+            <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
+            <span>CineGenie Speaks</span>
+          </div>
+
+          <p className="text-xs md:text-sm text-slate-100 font-medium italic leading-snug drop-shadow">
+            "{dialogue}"
+          </p>
+        </div>
+      </div>
+
+      {/* CineGenie Animated SVG Character */}
+      <div className="relative z-10 w-40 h-40 md:w-48 md:h-48 animate-levitate transition-transform duration-700">
+        <svg
+          viewBox="0 0 240 240"
+          className="w-full h-full drop-shadow-[0_16px_25px_rgba(0,0,0,0.8)] filter"
+        >
           <defs>
-            <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#60a5fa" />
-              <stop offset="100%" stopColor="#2563eb" />
+            {/* Gradients */}
+            <linearGradient id="genieSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#93c5fd" />
+              <stop offset="40%" stopColor="#3b82f6" />
+              <stop offset="100%" stopColor="#1d4ed8" />
             </linearGradient>
-            <linearGradient id="turbanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fbbf24" />
-              <stop offset="50%" stopColor="#f59e0b" />
-              <stop offset="100%" stopColor="#b45309" />
+
+            <linearGradient id="turbanSilk" x1="0%" y1="0%" x2="100%" y2="80%">
+              <stop offset="0%" stopColor="#fef08a" />
+              <stop offset="30%" stopColor="#f59e0b" />
+              <stop offset="70%" stopColor="#d97706" />
+              <stop offset="100%" stopColor="#92400e" />
             </linearGradient>
-            <linearGradient id="jewelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#ef4444" />
-              <stop offset="100%" stopColor="#7f1d1d" />
+
+            <linearGradient id="rubyGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#f87171" />
+              <stop offset="50%" stopColor="#dc2626" />
+              <stop offset="100%" stopColor="#991b1b" />
             </linearGradient>
+
+            <linearGradient id="vestVelvet" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#312e81" />
+              <stop offset="100%" stopColor="#1e1b4b" />
+            </linearGradient>
+
+            <linearGradient id="goldFiligree" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fde047" />
+              <stop offset="50%" stopColor="#eab308" />
+              <stop offset="100%" stopColor="#a16207" />
+            </linearGradient>
+
+            <linearGradient id="lampGold" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fef08a" />
+              <stop offset="40%" stopColor="#eab308" />
+              <stop offset="80%" stopColor="#ca8a04" />
+              <stop offset="100%" stopColor="#854d0e" />
+            </linearGradient>
+
+            <linearGradient id="smokeGlow" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#93c5fd" stopOpacity="0.95" />
+            </linearGradient>
+
+            <filter id="glowFilter" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
           </defs>
 
-          {/* Genie Mystical Smoke Base */}
-          <path 
-            d="M 100 170 C 80 185 60 190 75 198 C 90 205 130 195 125 185 C 120 175 105 175 100 170 Z" 
-            fill="#3b82f6" 
-            opacity="0.6"
-          />
+          {/* Golden Magic Lamp at Bottom */}
+          <g transform="translate(145, 175) scale(0.48)">
+            {/* Lamp base */}
+            <ellipse cx="60" cy="85" rx="30" ry="8" fill="url(#lampGold)" stroke="#78350f" strokeWidth="2" />
+            {/* Lamp belly */}
+            <path
+              d="M 30 85 C 20 65 30 40 60 40 C 90 40 100 65 90 85 Z"
+              fill="url(#lampGold)"
+              stroke="#78350f"
+              strokeWidth="2"
+            />
+            {/* Lamp spout extending left towards genie */}
+            <path
+              d="M 35 48 C 10 45 -10 30 -30 20 C -25 25 -5 45 25 60 Z"
+              fill="url(#lampGold)"
+              stroke="#78350f"
+              strokeWidth="2"
+            />
+            {/* Lamp lid & jewel finial */}
+            <ellipse cx="60" cy="38" rx="16" ry="6" fill="#fef08a" stroke="#a16207" strokeWidth="1.5" />
+            <circle cx="60" cy="30" r="4" fill="url(#rubyGlow)" />
+            {/* Lamp handle */}
+            <path
+              d="M 85 45 C 115 40 120 75 88 80"
+              fill="none"
+              stroke="url(#lampGold)"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+          </g>
 
-          {/* Torso & Golden Vest */}
-          <ellipse cx="100" cy="155" rx="35" ry="25" fill="#1e3a8a" />
-          <path d="M 80 140 L 75 175 L 90 175 L 95 145 Z" fill="#f59e0b" />
-          <path d="M 120 140 L 125 175 L 110 175 L 105 145 Z" fill="#f59e0b" />
-          {/* Gold Medallion */}
-          <circle cx="100" cy="155" r="7" fill="#fbbf24" stroke="#d97706" strokeWidth="2" />
+          {/* Animated Mystical Smoke billowing from Lamp spout to Genie Body */}
+          <g className="opacity-90">
+            {/* Smoke Swirl 1 */}
+            <path
+              d="M 130 185 C 110 195 90 180 85 195 C 80 210 115 220 125 205 C 135 190 145 180 130 185 Z"
+              fill="url(#smokeGlow)"
+              filter="url(#glowFilter)"
+              className="animate-pulse-aura"
+            />
+            {/* Lower Misty Vortex Body */}
+            <path
+              d="M 120 155 C 95 165 80 185 95 200 C 110 215 140 195 135 180 C 130 165 145 160 120 155 Z"
+              fill="url(#smokeGlow)"
+              opacity="0.85"
+            />
+            {/* Additional magical vapour wisps */}
+            <circle cx="105" cy="188" r="7" fill="#60a5fa" opacity="0.6" filter="url(#glowFilter)" />
+            <circle cx="132" cy="198" r="5" fill="#93c5fd" opacity="0.5" />
+          </g>
 
-          {/* Genie Face Base */}
-          <circle cx="100" cy="105" r="38" fill="url(#skinGrad)" />
-          {/* Pointy Genie Ears */}
-          <path d="M 64 100 C 50 90 52 112 65 110 Z" fill="#3b82f6" />
-          <path d="M 136 100 C 150 90 148 112 135 110 Z" fill="#3b82f6" />
-          {/* Gold Earring */}
-          <circle cx="145" cy="107" r="4" fill="none" stroke="#fbbf24" strokeWidth="2" />
+          {/* Genie Torso & Royal Velvet Waistcoat */}
+          <g>
+            <ellipse cx="120" cy="150" rx="42" ry="28" fill="#1e3a8a" />
+            {/* Velvet Waistcoat / Sherwani Vest */}
+            <path
+              d="M 94 135 L 86 172 C 105 178 135 178 154 172 L 146 135 Z"
+              fill="url(#vestVelvet)"
+            />
+            {/* Gold Embroidered Lapels */}
+            <path d="M 96 134 L 92 170 L 105 170 L 112 138 Z" fill="url(#goldFiligree)" />
+            <path d="M 144 134 L 148 170 L 135 170 L 128 138 Z" fill="url(#goldFiligree)" />
+            {/* Royal Gold Ruby Medallion Chain */}
+            <path
+              d="M 104 138 Q 120 156 136 138"
+              fill="none"
+              stroke="url(#goldFiligree)"
+              strokeWidth="2.5"
+            />
+            <circle cx="120" cy="152" r="7.5" fill="url(#rubyGlow)" stroke="#fef08a" strokeWidth="2" filter="url(#glowFilter)" />
+            <circle cx="120" cy="152" r="3" fill="#ffffff" opacity="0.7" />
+          </g>
 
-          {/* Indian Cinema Royal Turban (Pagri) */}
-          <path 
-            d="M 60 90 C 60 55 140 55 140 90 C 130 70 70 70 60 90 Z" 
-            fill="url(#turbanGrad)" 
-          />
-          <path 
-            d="M 62 82 C 75 60 125 60 138 82 C 125 72 75 72 62 82 Z" 
-            fill="#d97706" 
-          />
-          {/* Feather & Ruby Brooch (Kalgi) */}
-          <path d="M 100 65 Q 98 40 106 32 Q 104 50 100 65" fill="#f8fafc" />
-          <ellipse cx="100" cy="68" rx="6" ry="8" fill="url(#jewelGrad)" stroke="#fbbf24" strokeWidth="2" />
+          {/* Genie Head & Features */}
+          <g>
+            {/* Pointy Mythical Genie Ears */}
+            <path d="M 76 96 C 58 84 60 112 78 108 Z" fill="#2563eb" />
+            <path d="M 164 96 C 182 84 180 112 162 108 Z" fill="#2563eb" />
+            {/* Gold Earring on Left Ear */}
+            <circle cx="172" cy="106" r="5" fill="none" stroke="url(#goldFiligree)" strokeWidth="2.5" />
 
-          {/* Eyes & Eyebrows by Mood */}
+            {/* Genie Face Oval */}
+            <circle cx="120" cy="102" r="44" fill="url(#genieSkin)" />
+
+            {/* Indian Cinema Grand Pagri (Royal Silk Turban) */}
+            <path
+              d="M 72 85 C 72 40 168 40 168 85 C 155 60 85 60 72 85 Z"
+              fill="url(#turbanSilk)"
+              filter="url(#glowFilter)"
+            />
+            {/* Front Turban Swirl Folds */}
+            <path
+              d="M 74 76 C 92 48 148 48 166 76 C 150 64 90 64 74 76 Z"
+              fill="#b45309"
+            />
+            <path
+              d="M 78 70 C 95 44 145 44 162 70 C 146 58 94 58 78 70 Z"
+              fill="url(#turbanSilk)"
+            />
+            {/* Kalgi / Royal Feather Plume */}
+            <path
+              d="M 120 54 Q 116 22 126 12 Q 125 34 120 54"
+              fill="#f8fafc"
+              stroke="#cbd5e1"
+              strokeWidth="0.8"
+            />
+            {/* Ruby Brooch with Gold Setting (Pulses with divine magic) */}
+            <ellipse
+              cx="120"
+              cy="58"
+              rx="7"
+              ry="9"
+              fill="url(#rubyGlow)"
+              stroke="url(#goldFiligree)"
+              strokeWidth="2"
+              filter="url(#glowFilter)"
+            />
+            <circle cx="118" cy="56" r="2.5" fill="#ffffff" opacity="0.8" />
+          </g>
+
+          {/* EXPRESSIONS BY MOOD STATE */}
+
+          {/* 1. THINKING STATE */}
           {state === 'thinking' && (
-            <>
-              {/* Curious Eyebrows */}
-              <path d="M 80 92 Q 88 88 94 93" stroke="#1e293b" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <path d="M 106 93 Q 112 85 120 89" stroke="#1e293b" strokeWidth="3" fill="none" strokeLinecap="round" />
-              {/* Looking up eyes */}
-              <circle cx="87" cy="98" r="4" fill="#0f172a" />
-              <circle cx="113" cy="98" r="4" fill="#0f172a" />
-              <circle cx="88" cy="96" r="1.5" fill="#ffffff" />
-              <circle cx="114" cy="96" r="1.5" fill="#ffffff" />
-              {/* Pensive mouth */}
-              <path d="M 94 122 Q 100 120 106 122" stroke="#0f172a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            </>
+            <g>
+              {/* Pensive Brows */}
+              <path d="M 96 88 Q 106 83 113 89" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+              <path d="M 127 89 Q 134 81 144 86" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+              {/* Upward Gaze */}
+              <circle cx="105" cy="95" r="4.5" fill="#0f172a" />
+              <circle cx="135" cy="95" r="4.5" fill="#0f172a" />
+              {/* Glowing Iris lights */}
+              <circle cx="106" cy="93" r="2" fill="#ffffff" />
+              <circle cx="136" cy="93" r="2" fill="#ffffff" />
+              {/* Pensive pursed mouth */}
+              <path d="M 112 122 Q 120 120 128 122" stroke="#0f172a" strokeWidth="2.8" fill="none" strokeLinecap="round" />
+            </g>
           )}
 
+          {/* 2. CURIOUS / SKEPTICAL STATE */}
           {state === 'curious' && (
-            <>
-              <path d="M 78 92 Q 88 86 95 90" stroke="#1e293b" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <path d="M 105 90 Q 112 86 122 92" stroke="#1e293b" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <circle cx="87" cy="100" r="4" fill="#0f172a" />
-              <circle cx="113" cy="100" r="4" fill="#0f172a" />
-              {/* Smirking mouth */}
-              <path d="M 92 120 Q 102 126 110 119" stroke="#0f172a" strokeWidth="3" fill="none" strokeLinecap="round" />
-            </>
+            <g>
+              {/* One Arched Filmy Eyebrow */}
+              <path d="M 94 88 Q 105 82 114 86" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+              <path d="M 126 82 Q 135 73 146 82" stroke="#0f172a" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+              {/* Focused piercing eyes */}
+              <circle cx="104" cy="97" r="4.5" fill="#0f172a" />
+              <circle cx="136" cy="97" r="4.5" fill="#0f172a" />
+              <circle cx="105" cy="96" r="2" fill="#ffffff" />
+              <circle cx="137" cy="96" r="2" fill="#ffffff" />
+              {/* Witty Smirk */}
+              <path d="M 110 120 Q 122 126 132 118" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+            </g>
           )}
 
+          {/* 3. SMUG / CONFIDENT STATE (Bollywood Hero with Golden Aviators!) */}
           {state === 'confident' && (
-            <>
-              {/* Confident hero sunglasses! */}
-              <path d="M 74 94 Q 88 92 97 97 L 97 106 Q 88 112 74 104 Z" fill="#09090b" stroke="#f59e0b" strokeWidth="1.5" />
-              <path d="M 103 97 Q 112 92 126 94 L 126 104 Q 112 112 103 106 Z" fill="#09090b" stroke="#f59e0b" strokeWidth="1.5" />
-              <line x1="97" y1="99" x2="103" y2="99" stroke="#f59e0b" strokeWidth="2" />
-              {/* Confident Bollywood grin */}
-              <path d="M 90 120 Q 100 130 112 120" stroke="#0f172a" strokeWidth="3" fill="none" strokeLinecap="round" />
-            </>
+            <g>
+              {/* Golden Aviator Sunglasses */}
+              <path
+                d="M 88 90 Q 104 88 116 93 L 115 106 Q 104 113 88 103 Z"
+                fill="#09090b"
+                stroke="url(#goldFiligree)"
+                strokeWidth="2.2"
+                filter="url(#glowFilter)"
+              />
+              <path
+                d="M 124 93 Q 136 88 152 90 L 152 103 Q 136 113 125 106 Z"
+                fill="#09090b"
+                stroke="url(#goldFiligree)"
+                strokeWidth="2.2"
+                filter="url(#glowFilter)"
+              />
+              <line x1="116" y1="95" x2="124" y2="95" stroke="#f59e0b" strokeWidth="2.5" />
+              {/* Sunglass lens glint reflection */}
+              <line x1="94" y1="94" x2="102" y2="103" stroke="#fef08a" strokeWidth="1.8" opacity="0.8" />
+              <line x1="130" y1="94" x2="138" y2="103" stroke="#fef08a" strokeWidth="1.8" opacity="0.8" />
+              {/* Confident Bollywood Hero Grin */}
+              <path d="M 108 120 Q 120 132 132 120" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+            </g>
           )}
 
+          {/* 4. CELEBRATION / TRIUMPHANT STATE */}
           {state === 'celebration' && (
-            <>
-              <path d="M 80 96 Q 87 90 94 96" stroke="#0f172a" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <path d="M 106 96 Q 113 90 120 96" stroke="#0f172a" strokeWidth="3" fill="none" strokeLinecap="round" />
-              {/* Big Joyful Smile */}
-              <path d="M 86 116 Q 100 132 114 116 Z" fill="#ef4444" stroke="#0f172a" strokeWidth="2" />
-              <path d="M 90 117 Q 100 123 110 117" fill="#ffffff" />
-            </>
+            <g>
+              {/* Happy Arched Brows */}
+              <path d="M 96 90 Q 105 84 114 90" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+              <path d="M 126 90 Q 135 84 144 90" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+              {/* Radiant Eyes */}
+              <circle cx="105" cy="96" r="4.5" fill="#0f172a" />
+              <circle cx="135" cy="96" r="4.5" fill="#0f172a" />
+              <circle cx="106" cy="94" r="2.2" fill="#ffffff" />
+              <circle cx="136" cy="94" r="2.2" fill="#ffffff" />
+              {/* Grand Joyful Smile with Glistening Teeth */}
+              <path d="M 104 117 Q 120 136 136 117 Z" fill="#ef4444" stroke="#0f172a" strokeWidth="2.2" />
+              <path d="M 108 118 Q 120 126 132 118" fill="#ffffff" />
+              {/* Golden Victory Sparkles around head */}
+              <circle cx="68" cy="65" r="3.5" fill="#fef08a" filter="url(#glowFilter)" />
+              <circle cx="172" cy="65" r="3.5" fill="#fef08a" filter="url(#glowFilter)" />
+            </g>
           )}
 
+          {/* 5. STUMPED / ASTOUNDED STATE */}
           {state === 'stumped' && (
-            <>
-              <path d="M 78 88 Q 87 93 94 91" stroke="#1e293b" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <path d="M 106 91 Q 113 93 122 88" stroke="#1e293b" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <circle cx="86" cy="100" r="5" fill="#0f172a" />
-              <circle cx="114" cy="100" r="5" fill="#0f172a" />
-              {/* Surprised O mouth */}
-              <ellipse cx="100" cy="122" rx="6" ry="8" fill="#0f172a" />
-            </>
+            <g>
+              {/* Shocked / Inverted Brows */}
+              <path d="M 94 85 Q 104 90 113 88" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+              <path d="M 127 88 Q 136 90 146 85" stroke="#0f172a" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+              {/* Wide Staring Shocked Eyes */}
+              <circle cx="104" cy="98" r="6" fill="#0f172a" />
+              <circle cx="136" cy="98" r="6" fill="#0f172a" />
+              <circle cx="105" cy="97" r="2.5" fill="#ffffff" />
+              <circle cx="137" cy="97" r="2.5" fill="#ffffff" />
+              {/* Astounded 'O' Mouth */}
+              <ellipse cx="120" cy="122" rx="7" ry="10" fill="#0f172a" />
+            </g>
           )}
 
-          {/* Bollywood Mustachio (Iconic Masala Style) */}
-          <path 
-            d="M 100 116 C 92 113 86 117 80 115 C 85 119 95 120 100 117 C 105 120 115 119 120 115 C 114 117 108 113 100 116 Z" 
-            fill="#1e293b" 
+          {/* Iconic Indian Cinema Masala Mustachio */}
+          <path
+            d="M 120 114 C 110 111 102 115 95 113 C 101 117 113 118 120 115 C 127 118 139 117 145 113 C 138 115 130 111 120 114 Z"
+            fill="#0f172a"
           />
         </svg>
       </div>
 
-      {/* Floating Status Badge */}
-      <div className="mt-2 text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full bg-slate-900/80 border border-slate-700/60 text-amber-400 backdrop-blur-md">
-        {state === 'confident' ? '✨ CineGenie is close!' : state === 'celebration' ? '🎉 Deduced!' : state === 'stumped' ? '🤯 You Stumped Me!' : '🤔 CineGenie is thinking...'}
+      {/* Floating Status Badge Pill */}
+      <div className="mt-1 text-xs font-bold tracking-wider uppercase px-4 py-1 rounded-full glass-panel border border-amber-500/40 text-amber-300 shadow-md">
+        {state === 'confident'
+          ? '🔥 CineGenie is Closing In!'
+          : state === 'celebration'
+          ? '👑 Deduced with Precision!'
+          : state === 'stumped'
+          ? '🤯 CineGenie is Stumped!'
+          : state === 'curious'
+          ? '✨ CineGenie Senses a Match...'
+          : '🔮 CineGenie is Divining...'}
       </div>
     </div>
   );

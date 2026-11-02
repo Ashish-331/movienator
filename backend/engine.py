@@ -12,6 +12,7 @@ from .models import (
     QuestionModel,
     MovieModel,
 )
+from .engine_vectorized import VectorizedMovienatorEngine
 
 
 class MovienatorEngine:

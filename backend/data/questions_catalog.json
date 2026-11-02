@@ -1,0 +1,542 @@
+[
+  {
+    "id": "is_hindi",
+    "text": "Is this originally a Hindi-language (Bollywood) movie?",
+    "category": "industry",
+    "weight": 1.25
+  },
+  {
+    "id": "is_telugu",
+    "text": "Is this originally a Telugu-language (Tollywood) movie?",
+    "category": "industry",
+    "weight": 1.25
+  },
+  {
+    "id": "is_tamil",
+    "text": "Is this originally a Tamil-language (Kollywood) movie?",
+    "category": "industry",
+    "weight": 1.25
+  },
+  {
+    "id": "is_malayalam",
+    "text": "Is this originally a Malayalam-language (Mollywood) movie?",
+    "category": "industry",
+    "weight": 1.25
+  },
+  {
+    "id": "is_kannada",
+    "text": "Is this originally a Kannada-language (Sandalwood) movie?",
+    "category": "industry",
+    "weight": 1.2
+  },
+  {
+    "id": "is_south_indian",
+    "text": "Is this originally a South Indian cinema film (Tamil, Telugu, Malayalam, or Kannada)?",
+    "category": "industry",
+    "weight": 1.3
+  },
+  {
+    "id": "is_bengali",
+    "text": "Is this originally a Bengali-language cinema movie?",
+    "category": "industry",
+    "weight": 1.15
+  },
+  {
+    "id": "is_marathi",
+    "text": "Is this originally a Marathi-language cinema movie?",
+    "category": "industry",
+    "weight": 1.15
+  },
+  {
+    "id": "is_marathi_or_bengali",
+    "text": "Is this originally a Marathi or Bengali cinema classic?",
+    "category": "industry",
+    "weight": 1.1
+  },
+  {
+    "id": "is_punjabi",
+    "text": "Is this originally a Punjabi-language cinema movie?",
+    "category": "industry",
+    "weight": 1.15
+  },
+  {
+    "id": "is_regional_or_other",
+    "text": "Is this in Urdu, Gujarati, Bhojpuri, Odia, Assamese, Nepali, or another regional Indian language?",
+    "category": "industry",
+    "weight": 1.1
+  },
+  {
+    "id": "is_pan_india",
+    "text": "Was this marketed and theatrically released as a massive multilingual Pan-India blockbuster?",
+    "category": "scale",
+    "weight": 1.2
+  },
+  {
+    "id": "released_pre_1970",
+    "text": "Was this movie released before 1970 (Vintage / Early Golden Age era)?",
+    "category": "era",
+    "weight": 1.15
+  },
+  {
+    "id": "released_pre_1980",
+    "text": "Was this movie released before 1980 (Golden Age / Angry Young Man era)?",
+    "category": "era",
+    "weight": 1.15
+  },
+  {
+    "id": "released_1970_1989",
+    "text": "Was this movie released during the 1970s or 1980s (Masala & Angry Young Man era)?",
+    "category": "era",
+    "weight": 1.15
+  },
+  {
+    "id": "released_80s_or_90s",
+    "text": "Was this movie released in the 1980s or 1990s?",
+    "category": "era",
+    "weight": 1.15
+  },
+  {
+    "id": "released_1990_1999",
+    "text": "Was this movie released during the 1990s (90s Romance & Action era)?",
+    "category": "era",
+    "weight": 1.15
+  },
+  {
+    "id": "released_post_2000",
+    "text": "Was this movie released in the 21st century (year 2000 or later)?",
+    "category": "era",
+    "weight": 1.3
+  },
+  {
+    "id": "released_2000s",
+    "text": "Was this movie released between 2000 and 2009 (Millennium era)?",
+    "category": "era",
+    "weight": 1.15
+  },
+  {
+    "id": "released_2010s",
+    "text": "Was this movie released between 2010 and 2019 (2010s Blockbuster era)?",
+    "category": "era",
+    "weight": 1.15
+  },
+  {
+    "id": "released_post_2020",
+    "text": "Was this movie released in 2020 or later (Post-Pandemic modern era)?",
+    "category": "era",
+    "weight": 1.2
+  },
+  {
+    "id": "is_epic_runtime_150_plus",
+    "text": "Does this film have an epic long runtime exceeding 2.5 hours (over 150 minutes)?",
+    "category": "runtime",
+    "weight": 1.15
+  },
+  {
+    "id": "is_compact_runtime_under_110",
+    "text": "Is this a compact, fast-paced film with a runtime under 110 minutes (less than 1 hr 50 min)?",
+    "category": "runtime",
+    "weight": 1.15
+  },
+  {
+    "id": "is_standard_runtime",
+    "text": "Does this film have a typical theatrical runtime between 110 and 150 minutes?",
+    "category": "runtime",
+    "weight": 1.05
+  },
+  {
+    "id": "is_highly_rated_imdb_7_5",
+    "text": "Is this movie critically acclaimed with an IMDb rating of 7.5 or higher?",
+    "category": "reception",
+    "weight": 1.2
+  },
+  {
+    "id": "is_masterpiece_imdb_8_0",
+    "text": "Is this movie widely celebrated as a masterpiece with an IMDb rating of 8.0 or higher?",
+    "category": "reception",
+    "weight": 1.2
+  },
+  {
+    "id": "is_popular_blockbuster_votes",
+    "text": "Is this a major high-profile release or blockbuster with over 5,000 public IMDb votes?",
+    "category": "reception",
+    "weight": 1.25
+  },
+  {
+    "id": "is_cult_or_niche",
+    "text": "Is this an indie, lesser-known, or niche production with fewer than 500 recorded public votes?",
+    "category": "reception",
+    "weight": 1.1
+  },
+  {
+    "id": "is_action",
+    "text": "Is high-octane action, combat, or stunt choreography a primary genre of this movie?",
+    "category": "genre",
+    "weight": 1.25
+  },
+  {
+    "id": "is_comedy",
+    "text": "Is comedy, humor, or laugh-out-loud entertainment a central element of this film?",
+    "category": "genre",
+    "weight": 1.25
+  },
+  {
+    "id": "is_pure_comedy_or_satire",
+    "text": "Is the primary genre of the movie comedy, humor, or social satire?",
+    "category": "genre",
+    "weight": 1.1
+  },
+  {
+    "id": "is_romance",
+    "text": "Is a romantic love story or passionate relationship the central theme?",
+    "category": "genre",
+    "weight": 1.2
+  },
+  {
+    "id": "is_romantic_drama",
+    "text": "Is a passionate romantic relationship or tragic love story the primary focus?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_drama",
+    "text": "Is this primarily an emotional, character-driven dramatic film?",
+    "category": "genre",
+    "weight": 1.2
+  },
+  {
+    "id": "is_thriller",
+    "text": "Is this an edge-of-the-seat thriller filled with suspense, tension, or peril?",
+    "category": "genre",
+    "weight": 1.2
+  },
+  {
+    "id": "is_crime",
+    "text": "Does the plot heavily involve crime, criminals, illicit syndicates, or investigation?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_horror",
+    "text": "Does the movie belong to the horror or supernatural scare genre?",
+    "category": "genre",
+    "weight": 1.2
+  },
+  {
+    "id": "is_musical",
+    "text": "Is this movie celebrated as a grand musical with iconic, plot-integrated songs and dance?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_mystery",
+    "text": "Does the film center on solving an unsolved mystery, enigma, or whodunit?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_family",
+    "text": "Is this explicitly a wholesome family entertainer or multi-generational family saga?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_adventure",
+    "text": "Does the story feature an exciting journey, expedition, or high-stakes adventure?",
+    "category": "genre",
+    "weight": 1.1
+  },
+  {
+    "id": "is_sci_fi",
+    "text": "Does the film incorporate science fiction elements (time travel, advanced tech, aliens, robots)?",
+    "category": "genre",
+    "weight": 1.2
+  },
+  {
+    "id": "has_supernatural_or_sci_fi",
+    "text": "Does the film feature sci-fi, humanoid robots, time travel, ghosts, or superheroes?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_fantasy",
+    "text": "Does the story feature fantasy realms, folklore magic, curses, or mythological legends?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_biography",
+    "text": "Is this a biographical film based on the real life of an actual historical or public figure?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_history",
+    "text": "Is this a historical period piece recreating actual historical events or eras?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_historical_or_period_dynasty",
+    "text": "Is this a period piece set during ancient royal dynasties or British colonial rule?",
+    "category": "era",
+    "weight": 1.1
+  },
+  {
+    "id": "is_sports_centered",
+    "text": "Is the film centered around sports, athletics, wrestling, or competitive tournaments?",
+    "category": "genre",
+    "weight": 1.2
+  },
+  {
+    "id": "has_cricket_match",
+    "text": "Does a high-stakes cricket match play a pivotal role in the plot?",
+    "category": "plot",
+    "weight": 1.15
+  },
+  {
+    "id": "is_war",
+    "text": "Does the movie depict wartime military combat or border battlefront clashes?",
+    "category": "genre",
+    "weight": 1.15
+  },
+  {
+    "id": "is_animation_or_short",
+    "text": "Is this an animated feature or a short film production?",
+    "category": "genre",
+    "weight": 1.1
+  },
+  {
+    "id": "is_revenge_story",
+    "text": "Is personal revenge, retribution, or family vengeance the core driving motive?",
+    "category": "plot",
+    "weight": 1.2
+  },
+  {
+    "id": "features_police_or_cop",
+    "text": "Is the main protagonist an active police officer or law enforcement agent?",
+    "category": "character",
+    "weight": 1.2
+  },
+  {
+    "id": "features_undercover_or_spy",
+    "text": "Does the hero act undercover, concealing their true identity as a spy, cop, or agent?",
+    "category": "character",
+    "weight": 1.2
+  },
+  {
+    "id": "features_mafia_or_gangster",
+    "text": "Does the story revolve around the underworld, mafia, smuggling syndicates, or gang wars?",
+    "category": "character",
+    "weight": 1.2
+  },
+  {
+    "id": "features_double_role",
+    "text": "Does any main actor portray a double role, twin, or alter-ego?",
+    "category": "trope",
+    "weight": 1.15
+  },
+  {
+    "id": "has_love_triangle",
+    "text": "Does the central conflict involve a romantic love triangle between three people?",
+    "category": "plot",
+    "weight": 1.15
+  },
+  {
+    "id": "strong_mother_or_father_core",
+    "text": "Is intense emotional conflict, sacrifice, or vow to a parent (mother/father) central?",
+    "category": "plot",
+    "weight": 1.15
+  },
+  {
+    "id": "has_murder_investigation",
+    "text": "Does the plot involve investigating a murder, serial killer, or covering up an accidental death?",
+    "category": "plot",
+    "weight": 1.2
+  },
+  {
+    "id": "has_major_twist_ending",
+    "text": "Is the film famous for a shocking climax or major identity twist ending?",
+    "category": "trope",
+    "weight": 1.15
+  },
+  {
+    "id": "is_anti_hero_or_morally_grey",
+    "text": "Is the main protagonist morally grey, a ruthless criminal, or an anti-hero?",
+    "category": "character",
+    "weight": 1.15
+  },
+  {
+    "id": "features_courtroom_climax",
+    "text": "Does a fiery, high-stakes courtroom trial determine the climax?",
+    "category": "plot",
+    "weight": 1.15
+  },
+  {
+    "id": "features_heist_or_con",
+    "text": "Does the plot center on planning and executing an elaborate heist, bank robbery, or high-stakes con?",
+    "category": "plot",
+    "weight": 1.15
+  },
+  {
+    "id": "features_amnesia_or_memory_loss",
+    "text": "Does a central character suffer from amnesia, short-term memory loss, or split personality?",
+    "category": "trope",
+    "weight": 1.15
+  },
+  {
+    "id": "terminal_illness_ending",
+    "text": "Does a lead character suffer from a fatal cancer or incurable terminal illness?",
+    "category": "trope",
+    "weight": 1.15
+  },
+  {
+    "id": "has_iconic_train_scene",
+    "text": "Does the movie feature an iconic train sequence, fight, chase, or reunion?",
+    "category": "trope",
+    "weight": 1.1
+  },
+  {
+    "id": "features_horror_comedy",
+    "text": "Is this a horror-comedy blend combining spooky ghost elements with hilarious humor?",
+    "category": "trope",
+    "weight": 1.2
+  },
+  {
+    "id": "is_patriotic_or_military",
+    "text": "Is patriotic devotion to the motherland or armed forces military sacrifice the soul of the story?",
+    "category": "trope",
+    "weight": 1.2
+  },
+  {
+    "id": "is_mythological_or_devotional",
+    "text": "Is the film based on Hindu mythology, divine epics, or intense devotional worship?",
+    "category": "trope",
+    "weight": 1.2
+  },
+  {
+    "id": "is_multi_starrer",
+    "text": "Is this a grand ensemble multi-starrer featuring two or more massive superstar heroes together?",
+    "category": "trope",
+    "weight": 1.15
+  },
+  {
+    "id": "has_rural_or_village_setting",
+    "text": "Is a major portion of the story set in a rustic village, forest, or small remote town?",
+    "category": "setting",
+    "weight": 1.15
+  },
+  {
+    "id": "set_in_mumbai",
+    "text": "Is the movie set primarily in Mumbai (its streets, chawls, local trains, or underworld)?",
+    "category": "setting",
+    "weight": 1.15
+  },
+  {
+    "id": "set_in_delhi_or_punjab",
+    "text": "Is the movie set primarily in Delhi or the rural farmlands of Punjab?",
+    "category": "setting",
+    "weight": 1.1
+  },
+  {
+    "id": "involves_foreign_travel",
+    "text": "Does a significant part of the movie take place overseas outside India (e.g. Europe, USA)?",
+    "category": "setting",
+    "weight": 1.1
+  },
+  {
+    "id": "involves_mining_fields",
+    "text": "Does the story revolve around the brutal labor of mining fields (gold or coal)?",
+    "category": "setting",
+    "weight": 1.1
+  },
+  {
+    "id": "features_college_or_student_life",
+    "text": "Does the plot heavily feature college campus, university, or youth student life?",
+    "category": "setting",
+    "weight": 1.1
+  },
+  {
+    "id": "features_folklore_or_daiva",
+    "text": "Does it center on indigenous folklore, forest spirits, or ancient sacred rituals?",
+    "category": "trope",
+    "weight": 1.15
+  },
+  {
+    "id": "is_female_led",
+    "text": "Is this film led by a female protagonist with no prominent male savior?",
+    "category": "character",
+    "weight": 1.2
+  },
+  {
+    "id": "stars_shah_rukh_khan",
+    "text": "Does Shah Rukh Khan play the lead role?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_aamir_khan",
+    "text": "Does Aamir Khan play a main role?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_salman_khan",
+    "text": "Does Salman Khan play the lead role?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_amitabh_bachchan",
+    "text": "Does Amitabh Bachchan star in this movie?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_rajinikanth",
+    "text": "Does 'Superstar' Rajinikanth play the lead role?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_kamal_haasan",
+    "text": "Does Kamal Haasan headline this film?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_prabhas",
+    "text": "Does Prabhas play the lead protagonist?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_allu_arjun",
+    "text": "Does Allu Arjun star as the lead hero?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_mohanlal_or_mammootty",
+    "text": "Does Mohanlal or Mammootty star in this movie?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_yash",
+    "text": "Does Yash star as the lead hero?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_ranbir_kapoor_or_ranveer_singh",
+    "text": "Does Ranbir Kapoor or Ranveer Singh star in the lead?",
+    "category": "cast",
+    "weight": 1.15
+  },
+  {
+    "id": "stars_ayushmann_or_rajkummar",
+    "text": "Does Ayushmann Khurrana or Rajkummar Rao headline this movie?",
+    "category": "cast",
+    "weight": 1.1
+  }
+]

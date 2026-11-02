@@ -4,7 +4,7 @@
 import uuid
 import os
 from pathlib import Path
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -24,9 +24,9 @@ from .models import (
     TeachResponse,
 )
 from .db import repo
-from .engine import MovienatorEngine
+from .engine_vectorized import VectorizedMovienatorEngine
 
-app = FastAPI(title="Movienator API", version="1.0.0")
+app = FastAPI(title="Movienator API", version="2.0.0")
 
 # Enable CORS for frontend
 app.add_middleware(
@@ -37,8 +37,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-engine = MovienatorEngine(movies=repo.movies, questions=repo.questions)
-sessions: Dict[str, GameSession] = {}
+engine = VectorizedMovienatorEngine()
+sessions: Dict[str, Any] = {}
 
 
 @app.get("/api/health")
@@ -52,40 +52,34 @@ def health_check():
 
 @app.get("/api/game/stats")
 def get_stats():
-    industries = {}
-    for m in repo.movies.values():
-        industries[m.industry] = industries.get(m.industry, 0) + 1
-    return {
-        "total_movies": len(repo.movies),
-        "total_questions": len(repo.questions),
-        "industry_breakdown": industries,
-    }
+    return repo.get_stats()
 
 
 @app.get("/api/movies/search")
-def search_movies(q: str = ""):
+def search_movies(q: str = "", limit: int = 20, language: Optional[str] = None):
     if not q:
         return []
-    return repo.search_movies(q, limit=10)
+    return repo.search_movies(q, limit=limit, language=language)
 
 
 @app.get("/api/movies/all")
-def get_all_movies():
-    """Returns all movies in catalog sorted by popularity."""
-    sorted_movies = sorted(repo.movies.values(), key=lambda m: m.popularity, reverse=True)
-    return [
-        {
-            "id": m.id,
-            "title": m.title,
-            "year": m.year,
-            "industry": m.industry,
-            "director": m.director,
-            "lead_cast": m.lead_cast,
-            "poster_url": m.poster_url,
-            "popularity": m.popularity,
-        }
-        for m in sorted_movies
-    ]
+def get_all_movies(
+    page: int = 1,
+    limit: int = 24,
+    language: Optional[str] = None,
+    query: Optional[str] = None,
+    era_min: Optional[int] = None,
+    era_max: Optional[int] = None,
+):
+    """Returns movies in catalog with pagination and language/query/era filtering."""
+    return repo.get_all_movies(
+        page=page,
+        limit=limit,
+        language=language,
+        query=query,
+        era_min=era_min,
+        era_max=era_max,
+    )
 
 
 @app.post("/api/game/start", response_model=StartGameResponse)
@@ -301,8 +295,7 @@ def teach_movie(req: TeachRequest):
         )
 
     # 3. Synchronize engine
-    engine.movies = repo.movies
-    engine.questions = repo.questions
+    engine.load()
 
     return TeachResponse(
         status="learned",
