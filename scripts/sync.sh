@@ -1,0 +1,1 @@
+cp /home/ashish/movienator/backend/data/indian_cinema.json /home/ashish/movienator/data/seed_movies.json
