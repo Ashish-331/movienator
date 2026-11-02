@@ -148,6 +148,9 @@ class ConfirmResponse(BaseModel):
     message: str
     needs_teaching: bool = False
     next_question: Optional[QuestionModel] = None
+    confidence: Optional[float] = None
+    entropy: Optional[float] = None
+    top_candidates_preview: List[Dict[str, Any]] = []
 
 
 class TeachRequest(BaseModel):

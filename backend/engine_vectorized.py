@@ -41,7 +41,7 @@ class VectorizedGameSession:
         num_questions: int,
         confidence_threshold: float = 0.80,
         runner_up_ratio: float = 3.0,
-        max_questions: int = 25,
+        max_questions: int = 20,
     ):
         self.session_id = session_id
         self.probs = np.ascontiguousarray(priors.copy(), dtype=np.float32)
@@ -49,6 +49,7 @@ class VectorizedGameSession:
         self.asked_mask = np.zeros(num_questions, dtype=bool)
         self.history: List[QuestionHistoryItem] = []
         self.step_count = 0
+        self.guess_attempts = 0
         self.confidence_threshold = confidence_threshold
         self.runner_up_ratio = runner_up_ratio
         self.max_questions = max_questions
@@ -207,6 +208,29 @@ class VectorizedMovienatorEngine:
         if np.all(session.asked_mask):
             return None
 
+        # Human-intuitive opening sequence for natural Akinator experience
+        if session.step_count == 0:
+            hindi_idx = self.question_id_to_idx.get("is_hindi")
+            if hindi_idx is not None and not session.asked_mask[hindi_idx]:
+                return self.questions.get("is_hindi")
+
+        if session.step_count == 1:
+            hindi_idx = self.question_id_to_idx.get("is_hindi")
+            south_idx = self.question_id_to_idx.get("is_south_indian")
+            post2000_idx = self.question_id_to_idx.get("released_post_2000")
+
+            # If user said NO to Hindi, ask South Indian next
+            if hindi_idx is not None and session.history and session.history[0].answer == UserAnswer.NO:
+                if south_idx is not None and not session.asked_mask[south_idx]:
+                    return self.questions.get("is_south_indian")
+            elif post2000_idx is not None and not session.asked_mask[post2000_idx]:
+                return self.questions.get("released_post_2000")
+
+        if session.step_count == 2:
+            post2000_idx = self.question_id_to_idx.get("released_post_2000")
+            if post2000_idx is not None and not session.asked_mask[post2000_idx]:
+                return self.questions.get("released_post_2000")
+
         # 1. Vectorized candidate question probabilities P(Yes) = P . M
         p_yes = np.dot(session.probs, self.matrix)
         p_yes = np.clip(p_yes, 1e-6, 1.0 - 1e-6)
@@ -227,6 +251,12 @@ class VectorizedMovienatorEngine:
         # Penalize questions that cannot meaningfully split remaining candidate mass
         degenerate_mask = (p_yes < 0.01) | (p_yes > 0.99)
         scores[degenerate_mask] -= 0.8
+
+        # Penalize meta reception questions in opening turns to ensure natural dialogue
+        if session.step_count < 4:
+            for meta_q in ["is_popular_blockbuster_votes", "is_cult_or_niche"]:
+                if meta_q in self.question_id_to_idx:
+                    scores[self.question_id_to_idx[meta_q]] -= 2.0
 
         scores[session.asked_mask] = -1e9
 
@@ -344,24 +374,28 @@ class VectorizedMovienatorEngine:
         _, runner_up_prob = self.get_runner_up_candidate(session)
         ratio = top_prob / max(1e-12, runner_up_prob)
 
-        # 1. Early decisive lead: >= 30% confidence with 3.0x lead after turn 5
-        if session.step_count >= 5 and top_prob >= 0.30 and ratio >= 3.0:
+        # 1. High absolute confidence threshold
+        if top_prob >= 0.45:
             return True
 
-        # 2. Strong dominance: >= 25% confidence with 3.5x lead after turn 7
-        if session.step_count >= 7 and top_prob >= 0.25 and ratio >= 3.5:
+        # 2. Early decisive lead: >= 25% confidence with 2.2x lead after turn 5
+        if session.step_count >= 5 and top_prob >= 0.25 and ratio >= 2.2:
             return True
 
-        # 3. High absolute confidence threshold
-        if top_prob >= 0.60:
+        # 3. Strong dominance: >= 20% confidence with 2.0x lead after turn 7
+        if session.step_count >= 7 and top_prob >= 0.20 and ratio >= 2.0:
             return True
 
-        # 4. Turn 12 heuristic: 2.0x lead with >= 20% confidence
-        if session.step_count >= 12 and top_prob >= 0.20 and ratio >= 2.0:
+        # 4. Turn 10 heuristic: 1.6x lead with >= 15% confidence
+        if session.step_count >= 10 and top_prob >= 0.15 and ratio >= 1.6:
             return True
 
-        # 5. Maximum question limit reached
-        if session.step_count >= session.max_questions:
+        # 5. Turn 14 heuristic: 1.3x lead with >= 12% confidence
+        if session.step_count >= 14 and top_prob >= 0.12 and ratio >= 1.3:
+            return True
+
+        # 6. Hard limit: question 20 reached - ALWAYS guess!
+        if session.step_count >= session.max_questions or session.step_count >= 20:
             return True
 
         return False
@@ -400,8 +434,8 @@ class VectorizedMovienatorEngine:
                 session.probs.fill(1.0 / len(session.probs))
                 session.log_probs = np.log(session.probs)
 
+        session.guess_attempts += 1
         session.confidence_threshold = min(0.92, session.confidence_threshold + 0.05)
-        session.max_questions += 5
         session.guessed_movie_id = None
 
     def get_movie_metadata(self, movie_id: str) -> Optional[Dict[str, Any]]:

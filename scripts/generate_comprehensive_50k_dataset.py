@@ -50,6 +50,8 @@ LANGUAGE_TO_INDUSTRY = {
     "tulu": "Tulu Cinema (Coastalwood)",
 }
 
+INDUSTRY_TO_LANGUAGE = {v: k for k, v in LANGUAGE_TO_INDUSTRY.items()}
+
 QUESTIONS = [
     # 1. Industry / Language Bisections
     {"id": "is_hindi", "text": "Is this originally a Hindi-language (Bollywood) movie?", "category": "industry", "weight": 1.25},
@@ -170,12 +172,15 @@ def evaluate_movie_attributes(
     votes: int,
     genres: list[str],
     language: str,
+    director: str | None = None,
+    lead_cast: list[str] | None = None,
     iconic_attrs: dict[str, float] | None = None,
 ) -> dict[str, float]:
     """Evaluates question attributes for any movie, blending raw metadata rules with curated iconic data."""
     attrs: dict[str, float] = {}
     title_lower = title.lower()
     genre_set = set(genres)
+    is_iconic = iconic_attrs is not None
 
     # 1. Industry / Language
     attrs["is_hindi"] = 1.0 if language == "hindi" else 0.0
@@ -192,7 +197,8 @@ def evaluate_movie_attributes(
     ) else 0.0
     attrs["is_pan_india"] = 1.0 if (
         (votes >= 20000 and year and year >= 2015 and language in ("telugu", "tamil", "kannada", "hindi"))
-        or any(w in title_lower for w in ["baahubali", "kgf", "rrr", "pushpa", "kantara", "jawan", "kalki"])
+        or any(w in title_lower for w in ["baahubali", "kgf", "rrr", "pushpa", "kantara", "jawan", "kalki", "salaar", "leo", "jailer"])
+        or (is_iconic and language in ("telugu", "tamil", "kannada") and year and year >= 2015)
     ) else 0.0
 
     # 2. Era / Decade (Strict, non-overlapping decade buckets)
@@ -222,15 +228,21 @@ def evaluate_movie_attributes(
         attrs["is_standard_runtime"] = 0.5
 
     # 4. Reception & Votes
-    if rating is not None:
-        attrs["is_highly_rated_imdb_7_5"] = 1.0 if rating >= 7.5 else 0.0
-        attrs["is_masterpiece_imdb_8_0"] = 1.0 if rating >= 8.0 else 0.0
+    if is_iconic:
+        attrs["is_highly_rated_imdb_7_5"] = 1.0
+        attrs["is_masterpiece_imdb_8_0"] = 1.0
+        attrs["is_popular_blockbuster_votes"] = 1.0
+        attrs["is_cult_or_niche"] = 0.0
     else:
-        attrs["is_highly_rated_imdb_7_5"] = 0.5
-        attrs["is_masterpiece_imdb_8_0"] = 0.5
+        if rating is not None:
+            attrs["is_highly_rated_imdb_7_5"] = 1.0 if rating >= 7.5 else 0.0
+            attrs["is_masterpiece_imdb_8_0"] = 1.0 if rating >= 8.0 else 0.0
+        else:
+            attrs["is_highly_rated_imdb_7_5"] = 0.5
+            attrs["is_masterpiece_imdb_8_0"] = 0.5
 
-    attrs["is_popular_blockbuster_votes"] = 1.0 if votes >= 5000 else 0.0
-    attrs["is_cult_or_niche"] = 1.0 if votes < 500 else 0.0
+        attrs["is_popular_blockbuster_votes"] = 1.0 if votes >= 5000 else 0.0
+        attrs["is_cult_or_niche"] = 1.0 if votes < 500 else 0.0
 
     # 5. Major Genres
     attrs["is_action"] = 1.0 if "Action" in genre_set else 0.0
@@ -315,7 +327,7 @@ def evaluate_movie_attributes(
     attrs["features_college_or_student_life"] = 1.0 if any(w in title_lower for w in ["college", "student", "school", "3 idiots", "chhichhore", "student of the year"]) else 0.0
     attrs["features_folklore_or_daiva"] = 1.0 if any(w in title_lower for w in ["kantara", "tumbbad", "daiva", "bhootha", "brahmayugam"]) else 0.0
 
-    # 8. Cast defaults
+    # 8. Cast & Director evaluations
     for cast_q in [
         "is_female_led", "stars_shah_rukh_khan", "stars_aamir_khan", "stars_salman_khan",
         "stars_amitabh_bachchan", "stars_rajinikanth", "stars_kamal_haasan", "stars_prabhas",
@@ -323,6 +335,39 @@ def evaluate_movie_attributes(
         "stars_ranbir_kapoor_or_ranveer_singh", "stars_ayushmann_or_rajkummar"
     ]:
         attrs[cast_q] = 0.0
+
+    if lead_cast:
+        cast_str = " ".join(lead_cast).lower() if isinstance(lead_cast, list) else str(lead_cast).lower()
+        if any(k in cast_str for k in ["shah rukh", "shahrukh", "srk"]):
+            attrs["stars_shah_rukh_khan"] = 1.0
+        if any(k in cast_str for k in ["aamir khan", "amir khan"]):
+            attrs["stars_aamir_khan"] = 1.0
+        if any(k in cast_str for k in ["salman khan"]):
+            attrs["stars_salman_khan"] = 1.0
+        if any(k in cast_str for k in ["amitabh", "bachchan"]):
+            attrs["stars_amitabh_bachchan"] = 1.0
+        if any(k in cast_str for k in ["rajinikanth", "rajni", "rajani"]):
+            attrs["stars_rajinikanth"] = 1.0
+        if any(k in cast_str for k in ["kamal haasan", "kamal hassan", "kamalhasan"]):
+            attrs["stars_kamal_haasan"] = 1.0
+        if any(k in cast_str for k in ["prabhas"]):
+            attrs["stars_prabhas"] = 1.0
+        if any(k in cast_str for k in ["allu arjun"]):
+            attrs["stars_allu_arjun"] = 1.0
+        if any(k in cast_str for k in ["yash"]):
+            attrs["stars_yash"] = 1.0
+        if any(k in cast_str for k in ["mohanlal", "mammootty"]):
+            attrs["stars_mohanlal_or_mammootty"] = 1.0
+        if any(k in cast_str for k in ["ranbir kapoor", "ranveer singh"]):
+            attrs["stars_ranbir_kapoor_or_ranveer_singh"] = 1.0
+        if any(k in cast_str for k in ["ayushmann", "rajkummar", "rajkumar rao"]):
+            attrs["stars_ayushmann_or_rajkummar"] = 1.0
+
+    if director and "rajamouli" in director.lower():
+        attrs["is_pan_india"] = 1.0
+        attrs["is_epic_runtime_150_plus"] = 1.0
+        attrs["is_masterpiece_imdb_8_0"] = 1.0
+        attrs["is_popular_blockbuster_votes"] = 1.0
 
     # Override with curated iconic attributes if present!
     if iconic_attrs:
@@ -342,6 +387,8 @@ def main():
     # 1. Load curated iconic movies
     iconic_by_norm = {}
     iconic_all = []
+    matched_iconic_ids = set()
+
     if ICONIC_JSON.exists():
         with open(ICONIC_JSON, "r", encoding="utf-8") as f:
             iconic_data = json.load(f)
@@ -397,27 +444,49 @@ def main():
             # Industry mapping
             industry = LANGUAGE_TO_INDUSTRY.get(raw_lang, f"{raw_lang.title()} Cinema")
 
-            # Unique ID generation
-            if raw_id and raw_id != "-" and raw_id not in seen_ids:
-                m_id = raw_id
-            else:
-                slug = re.sub(r"[^a-z0-9]", "_", title.lower())[:24].strip("_")
-                m_id = f"{slug}_{year or 'unknown'}_{row_idx}"
-                if m_id in seen_ids:
-                    m_id = f"{m_id}_{raw_lang}"
-            seen_ids.add(m_id)
-
             # Check match with iconic curated movies
             norm_t = normalize_title(title)
             iconic_match = iconic_by_norm.get((norm_t, year or 0)) or iconic_by_norm.get(norm_t)
 
-            director = iconic_match["director"] if iconic_match else "Unknown"
-            lead_cast = iconic_match["lead_cast"] if iconic_match else []
-            poster_url = iconic_match["poster_url"] if (iconic_match and iconic_match.get("poster_url")) else None
-            iconic_attrs = iconic_match.get("attributes") if iconic_match else None
+            director = "Unknown"
+            lead_cast = []
+            poster_url = None
+            iconic_attrs = None
+            is_canonical_iconic = False
 
-            # Compute Popularity prior
-            # Foreign Hollywood title detection
+            if iconic_match:
+                iconic_lang = INDUSTRY_TO_LANGUAGE.get(iconic_match.get("industry", ""), "hindi")
+                if raw_lang == iconic_lang and iconic_match["id"] not in matched_iconic_ids:
+                    # Original canonical language version!
+                    is_canonical_iconic = True
+                    matched_iconic_ids.add(iconic_match["id"])
+                    m_id = iconic_match["id"]
+                    title = iconic_match["title"]
+                    year = iconic_match["year"]
+                    industry = iconic_match["industry"]
+                    director = iconic_match["director"]
+                    lead_cast = iconic_match["lead_cast"]
+                    poster_url = iconic_match.get("poster_url")
+                    iconic_attrs = iconic_match.get("attributes")
+                    votes = max(votes, 120000)
+                    rating = max(rating or 0.0, 8.4)
+                    timing = timing or 165
+                elif raw_lang != iconic_lang:
+                    # Dubbed version (e.g. Tamil dub of Telugu RRR) -> downweight
+                    iconic_attrs = None
+
+            if not is_canonical_iconic:
+                if raw_id and raw_id != "-" and raw_id not in seen_ids:
+                    m_id = raw_id
+                else:
+                    slug = re.sub(r"[^a-z0-9]", "_", title.lower())[:24].strip("_")
+                    m_id = f"{slug}_{year or 'unknown'}_{row_idx}"
+                    if m_id in seen_ids:
+                        m_id = f"{m_id}_{raw_lang}"
+
+            seen_ids.add(m_id)
+
+            # Compute Popularity power-law prior
             title_lower = title.lower()
             foreign_kw = [
                 'iron man', 'indiana jones', 'star wars', 'zero dark thirty',
@@ -427,13 +496,15 @@ def main():
             ]
             is_foreign = any(k in title_lower for k in foreign_kw)
 
-            # Compute Popularity power-law prior
             rating_val = rating if rating is not None else 6.0
             raw_pop = ((votes + 10.0) ** 0.65) * ((rating_val / 10.0) ** 1.5)
             if is_foreign:
                 raw_pop *= 0.001
-            if iconic_match:
-                raw_pop *= 3.0
+            if is_canonical_iconic:
+                raw_pop *= 4.5
+            elif iconic_match and not is_canonical_iconic:
+                # Downweight dubs so canonical entity dominates
+                raw_pop *= 0.001
 
             raw_movies.append({
                 "id": m_id,
@@ -455,31 +526,24 @@ def main():
 
     print(f"Processed {len(raw_movies)} movies from raw CSV.")
 
-    # 3. Add any iconic movies not yet in raw_movies
-    norm_existing = {normalize_title(m["title"]): m for m in raw_movies}
+    # 3. Add any iconic movies not yet matched in raw_movies
     added_iconic = 0
     for im in iconic_all:
-        norm_t = normalize_title(im["title"])
-        if norm_t not in norm_existing:
+        if im["id"] not in matched_iconic_ids:
             m_id = im["id"]
-            if m_id in seen_ids:
-                m_id = f"{m_id}_iconic"
+            matched_iconic_ids.add(m_id)
             seen_ids.add(m_id)
-            lang = "hindi"
-            for k, v in LANGUAGE_TO_INDUSTRY.items():
-                if v == im["industry"]:
-                    lang = k
-                    break
-            raw_pop = ((50000.0 + 10.0) ** 0.65) * ((8.2 / 10.0) ** 1.5) * 3.0
+            lang = INDUSTRY_TO_LANGUAGE.get(im["industry"], "hindi")
+            raw_pop = ((120000.0 + 10.0) ** 0.65) * ((8.4 / 10.0) ** 1.5) * 4.5
             raw_movies.append({
                 "id": m_id,
                 "title": im["title"],
                 "year": im["year"],
                 "industry": im["industry"],
                 "language": lang,
-                "timing_min": 145,
-                "rating": 8.2,
-                "votes": 50000,
+                "timing_min": 165,
+                "rating": 8.4,
+                "votes": 120000,
                 "genres": ["Drama", "Action"],
                 "director": im["director"],
                 "lead_cast": im["lead_cast"],
@@ -517,6 +581,8 @@ def main():
             votes=m["votes"],
             genres=m["genres"],
             language=m["language"],
+            director=m["director"],
+            lead_cast=m["lead_cast"],
             iconic_attrs=m.get("iconic_attrs"),
         )
 

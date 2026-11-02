@@ -112,12 +112,23 @@ export default function App() {
       setPreviews(data.top_candidates_preview || []);
       setHistoryCount((c) => c + 1);
 
-      if (data.is_guess_ready && data.guessed_movie) {
-        setGuessedMovie(data.guessed_movie);
+      const candidateGuess =
+        data.guessed_movie ||
+        data.runner_up_movie ||
+        (data.top_candidates_preview && data.top_candidates_preview.length > 0 ? data.top_candidates_preview[0] : null);
+
+      if (data.is_guess_ready && candidateGuess) {
+        setGuessedMovie(candidateGuess);
         setIsGuessReady(true);
-      } else {
+      } else if (data.question_number > 20 && candidateGuess) {
+        setGuessedMovie(candidateGuess);
+        setIsGuessReady(true);
+      } else if (data.next_question) {
         soundEffects.playChime();
         setQuestion(data.next_question);
+      } else if (candidateGuess) {
+        setGuessedMovie(candidateGuess);
+        setIsGuessReady(true);
       }
     } catch (err) {
       console.error(err);
@@ -150,20 +161,22 @@ export default function App() {
 
   const handleConfirmGuess = async () => {
     try {
-      const res = await fetch('/api/game/confirm', {
+      await fetch('/api/game/confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: sessionId, is_correct: true }),
       });
-      const data = await res.json();
       setIsGuessReady(false);
       setGameState('victory');
     } catch (err) {
       console.error(err);
+      setIsGuessReady(false);
+      setGameState('victory');
     }
   };
 
   const handleRejectGuess = async () => {
+    setLoading(true);
     try {
       const res = await fetch('/api/game/confirm', {
         method: 'POST',
@@ -173,15 +186,23 @@ export default function App() {
       const data = await res.json();
       setIsGuessReady(false);
 
-      if (data.status === 'game_over') {
+      if (data.status === 'defeat' || data.status === 'game_over' || data.needs_teaching) {
         setGameState('defeat');
-      } else if (data.status === 'continue' && data.next_question) {
+      } else if (data.next_question) {
+        soundEffects.playChime();
         setQuestion(data.next_question);
-        setConfidence(data.confidence);
-        setEntropy(data.entropy);
+        if (data.confidence !== undefined) setConfidence(data.confidence);
+        if (data.entropy !== undefined) setEntropy(data.entropy);
+        if (data.top_candidates_preview) setPreviews(data.top_candidates_preview);
+      } else {
+        setGameState('defeat');
       }
     } catch (err) {
       console.error(err);
+      setIsGuessReady(false);
+      setGameState('defeat');
+    } finally {
+      setLoading(false);
     }
   };
 

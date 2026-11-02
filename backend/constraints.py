@@ -53,6 +53,20 @@ class ConstraintManager:
             "is_compact_runtime_under_110",
             "is_standard_runtime",
         ],
+        "star_actors": [
+            "stars_shah_rukh_khan",
+            "stars_aamir_khan",
+            "stars_salman_khan",
+            "stars_amitabh_bachchan",
+            "stars_rajinikanth",
+            "stars_kamal_haasan",
+            "stars_prabhas",
+            "stars_allu_arjun",
+            "stars_yash",
+            "stars_mohanlal_or_mammootty",
+            "stars_ranbir_kapoor_or_ranveer_singh",
+            "stars_ayushmann_or_rajkummar",
+        ],
     }
 
     # Macro-level bisections and their children
@@ -60,6 +74,17 @@ class ConstraintManager:
         "is_south_indian": ["is_telugu", "is_tamil", "is_malayalam", "is_kannada"],
         "released_post_2000": ["released_2000s", "released_2010s", "released_post_2020"],
     }
+
+    BOLLYWOOD_STARS = [
+        "stars_shah_rukh_khan", "stars_salman_khan", "stars_aamir_khan",
+        "stars_amitabh_bachchan", "stars_ranbir_kapoor_or_ranveer_singh",
+        "stars_ayushmann_or_rajkummar"
+    ]
+
+    SOUTH_STARS = [
+        "stars_rajinikanth", "stars_kamal_haasan", "stars_prabhas",
+        "stars_allu_arjun", "stars_yash", "stars_mohanlal_or_mammootty"
+    ]
 
     # Negative / Positive implications of major splitters
     MAJOR_SPLIT_RULES = {
@@ -189,10 +214,19 @@ class ConstraintManager:
                     if post_q in q_map:
                         asked_mask[q_map[post_q]] = True
 
-            # 5. If South Indian child is YES, mask is_south_indian macro question
+            # 5. If South Indian child is YES, mask is_south_indian and Bollywood stars
             if q_id in ["is_telugu", "is_tamil", "is_malayalam", "is_kannada"]:
                 if "is_south_indian" in q_map:
                     asked_mask[q_map["is_south_indian"]] = True
+                for b_star in cls.BOLLYWOOD_STARS:
+                    if b_star in q_map:
+                        asked_mask[q_map[b_star]] = True
+
+            # 6. If star actor is YES, mask all other superstar questions
+            if q_id in cls.MUTUALLY_EXCLUSIVE_GROUPS["star_actors"]:
+                for s_id in cls.MUTUALLY_EXCLUSIVE_GROUPS["star_actors"]:
+                    if s_id != q_id and s_id in q_map:
+                        asked_mask[q_map[s_id]] = True
 
         elif is_no and is_hard:
             # 1. Hard candidate elimination: candidates with attribute 1 are IMPOSSIBLE

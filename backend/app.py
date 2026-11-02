@@ -123,41 +123,54 @@ def submit_answer(req: AnswerRequest):
 
     _, is_ready = engine.submit_answer(session, question, req.answer)
 
+    # Force guess if at or beyond question 20
+    if session.step_count >= 20 or session.step_count >= session.max_questions:
+        is_ready = True
+
     entropy = engine.calculate_entropy(session.probabilities)
     top_m_id, top_prob = engine.get_top_candidate(session)
     runner_up_m_id, _ = engine.get_runner_up_candidate(session)
     previews = engine.get_top_candidates_preview(session, limit=4)
+
+    def resolve_movie_model(m_id: str) -> Optional[MovieModel]:
+        if not m_id:
+            return None
+        meta = engine.get_movie_metadata(m_id)
+        if meta:
+            return MovieModel(
+                id=meta["id"],
+                title=meta["title"],
+                year=meta["year"],
+                industry=meta["industry"],
+                director=meta["director"],
+                lead_cast=meta["lead_cast"],
+                poster_url=meta.get("poster_url"),
+                popularity=float(meta.get("popularity", 1.0)),
+            )
+        m = repo.get_movie(m_id)
+        if m:
+            return MovieModel(
+                id=m.id,
+                title=m.title,
+                year=m.year,
+                industry=m.industry,
+                director=m.director,
+                lead_cast=m.lead_cast,
+                poster_url=m.poster_url,
+                popularity=float(m.popularity),
+            )
+        return None
 
     guessed_movie_model = None
     runner_up_model = None
     next_q_model = None
 
     if is_ready:
-        guessed_movie = repo.movies.get(top_m_id)
-        if guessed_movie:
-            guessed_movie_model = MovieModel(
-                id=guessed_movie.id,
-                title=guessed_movie.title,
-                year=guessed_movie.year,
-                industry=guessed_movie.industry,
-                director=guessed_movie.director,
-                lead_cast=guessed_movie.lead_cast,
-                poster_url=guessed_movie.poster_url,
-                popularity=guessed_movie.popularity,
-            )
+        guessed_movie_model = resolve_movie_model(top_m_id)
+        if not guessed_movie_model and previews:
+            guessed_movie_model = resolve_movie_model(previews[0]["id"])
         if runner_up_m_id:
-            ru = repo.movies.get(runner_up_m_id)
-            if ru:
-                runner_up_model = MovieModel(
-                    id=ru.id,
-                    title=ru.title,
-                    year=ru.year,
-                    industry=ru.industry,
-                    director=ru.director,
-                    lead_cast=ru.lead_cast,
-                    poster_url=ru.poster_url,
-                    popularity=ru.popularity,
-                )
+            runner_up_model = resolve_movie_model(runner_up_m_id)
     else:
         next_q = engine.select_next_question(session)
         if next_q:
@@ -168,20 +181,11 @@ def submit_answer(req: AnswerRequest):
                 weight=next_q.weight,
             )
         else:
-            # Out of questions: trigger fallback guess
+            # Out of questions: trigger fallback guess immediately
             is_ready = True
-            guessed_movie = repo.movies.get(top_m_id)
-            if guessed_movie:
-                guessed_movie_model = MovieModel(
-                    id=guessed_movie.id,
-                    title=guessed_movie.title,
-                    year=guessed_movie.year,
-                    industry=guessed_movie.industry,
-                    director=guessed_movie.director,
-                    lead_cast=guessed_movie.lead_cast,
-                    poster_url=guessed_movie.poster_url,
-                    popularity=guessed_movie.popularity,
-                )
+            guessed_movie_model = resolve_movie_model(top_m_id)
+            if not guessed_movie_model and previews:
+                guessed_movie_model = resolve_movie_model(previews[0]["id"])
 
     return AnswerResponse(
         session_id=session.session_id,
@@ -239,9 +243,15 @@ def confirm_guess(req: ConfirmRequest):
         top_m_id, _ = engine.get_top_candidate(session)
         engine.eliminate_candidate_and_resume(session, top_m_id)
 
-        # Check if more candidates exist
+        # Check if more candidates exist or if attempt/question ceiling is reached
         top_new, prob_new = engine.get_top_candidate(session)
-        if not top_new or prob_new <= 0 or session.step_count >= session.max_questions:
+        if (
+            not top_new
+            or prob_new <= 0
+            or session.step_count >= 20
+            or session.step_count >= session.max_questions
+            or getattr(session, "guess_attempts", 0) >= 2
+        ):
             return ConfirmResponse(
                 session_id=session.session_id,
                 status="defeat",
@@ -258,6 +268,9 @@ def confirm_guess(req: ConfirmRequest):
                 needs_teaching=True,
             )
 
+        entropy_new = engine.calculate_entropy(session.probabilities)
+        previews_new = engine.get_top_candidates_preview(session, limit=4)
+
         return ConfirmResponse(
             session_id=session.session_id,
             status="resumed",
@@ -269,6 +282,9 @@ def confirm_guess(req: ConfirmRequest):
                 category=next_q.category,
                 weight=next_q.weight,
             ),
+            confidence=round(prob_new, 4),
+            entropy=round(entropy_new, 2),
+            top_candidates_preview=previews_new,
         )
 
 
